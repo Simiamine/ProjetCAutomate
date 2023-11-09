@@ -4,3 +4,4 @@ git config --global user.email "mzaliamine@gmail.com"
   jekgeg*
   rebgregrgb
 hello
+test
