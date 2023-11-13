@@ -6,8 +6,8 @@ typedef struct {
     int*** matriceTransition;  // Matrice dynamique
     int* etatsFinaux;          // Tableau d'entiers
     int etatInitial;           // État initial
-    int nombreEtats;            // Nombre d'états dans l'automate
-    int nombreEvenements;       // Nombre d'événements dans l'automate
+    int nombreEtats;           // Nombre d'états dans l'automate
+    int nombreEvenements;      // Nombre d'événements dans l'automate
 } Automate;
 
 // Fonction pour initialiser un automate (à appeler avant utilisation)
@@ -78,13 +78,18 @@ void deserialiserAutomate(const char* nomFichier, Automate* automate) {
 int main() {
     // Initialisation de la structure Automate
     Automate monAutomate;
-    initialiserAutomate(&monAutomate, 3, 4);
+    initialiserAutomate(&monAutomate, 3, 2);
 
-    // Exemple d'initialisation de l'automate avec des données arbitraires
-    // (à remplacer par vos propres données)
-    monAutomate.matriceTransition[0][0][1] = 1;
-    monAutomate.matriceTransition[1][2][2] = 1;
-    monAutomate.etatsFinaux[2] = 1;
+    // Exemple d'initialisation de l'automate avec vos données
+    monAutomate.matriceTransition[0][0][0] = 1;  // 0-0:0
+    monAutomate.matriceTransition[0][1][1] = 1;  // 0-1:1
+    monAutomate.matriceTransition[1][0][2] = 1;  // 1-0:2
+    monAutomate.matriceTransition[1][1][0] = 1;  // 1-1:0
+    monAutomate.matriceTransition[2][0][2] = 1;  // 2-0:2
+    monAutomate.matriceTransition[2][1][0] = 1;  // 2-1:0
+
+    monAutomate.etatsFinaux[0] = 1;  // État 0 est final
+    monAutomate.etatsFinaux[2] = 1;  // État 2 est final
     monAutomate.etatInitial = 0;
 
     // Sérialisation de l'automate dans un fichier
