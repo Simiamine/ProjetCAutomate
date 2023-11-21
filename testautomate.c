@@ -3,9 +3,14 @@
 
 // Structure representant les etats lies par un evenment
 typedef struct {
-    int listeetats;
+    int etat;
     listetats* suivant;
 } listetats;
+
+typedef struct {
+    char event;
+    listevents* suivant;
+} listevents;
 
 // Structure representant un automate
 typedef struct {
@@ -13,8 +18,10 @@ typedef struct {
     int* etatsFinaux;          // Tableau d'entiers
     int etatInitial;           // État initial
     int nombreEtats;           // Nombre d'états dans l'automate
-    int nombreEvenements;      // Nombre d'événements dans l'automate
+    int nombreEvent;      // Nombre d'événements dans l'automate
+    listevents listeEvent; // Liste des événements
 } Automate;
+
 
 // Fonction pour initialiser un automate (à appeler avant utilisation)
 void initialiserAutomate(Automate* automate, int nombreEtats, int nombreEvenements) {
