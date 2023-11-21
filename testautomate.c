@@ -1,16 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Structure représentant un automate
+// Structure representant les etats lies par un evenment
 typedef struct {
-    int*** matriceTransition;  // Matrice dynamique
+    int listeetats;
+    listetats* suivant;
+} listetats;
+
+// Structure representant un automate
+typedef struct {
+    listetats** matriceTransition;  // Matrice dynamique
     int* etatsFinaux;          // Tableau d'entiers
     int etatInitial;           // État initial
     int nombreEtats;           // Nombre d'états dans l'automate
     int nombreEvenements;      // Nombre d'événements dans l'automate
 } Automate;
-
-
 
 // Fonction pour initialiser un automate (à appeler avant utilisation)
 void initialiserAutomate(Automate* automate, int nombreEtats, int nombreEvenements) {
