@@ -1,9 +1,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// Structure représentant un automate
+// Structure representant les etats lies par un evenment
 typedef struct {
-    int*** matriceTransition;  // Matrice dynamique
+    int listeetats;
+    listetats* suivant;
+} listetats;
+
+// Structure representant un automate
+typedef struct {
+    listetats** matriceTransition;  // Matrice dynamique
     int* etatsFinaux;          // Tableau d'entiers
     int etatInitial;           // État initial
     int nombreEtats;           // Nombre d'états dans l'automate
@@ -100,6 +106,50 @@ void afficherAutomate(Automate* automate) {
     printf("\n");
 
     printf("Etat initial : %d\n", automate->etatInitial);
+}
+
+void verifierautomatecomplete(Automate* automate){
+    int i, j, k;
+    for (i = 0; i < automate->nombreEtats; i++) {
+        for (j = 0; j < automate->nombreEvenements; j++) {
+            for (k = 0; k < automate->nombreEtats; k++) {
+                if (automate->matriceTransition[i][j][k] == 0){
+                    printf("L'automate n'est pas complet");
+                    exit(EXIT_FAILURE);
+                }
+            }
+        }
+    }
+}
+
+void verifierautomatedeterministe(Automate* automate){
+    int i, j, k;
+    for (i = 0; i < automate->nombreEtats; i++) {
+        for (j = 0; j < automate->nombreEvenements; j++) {
+            for (k = 0; k < automate->nombreEtats; k++) {
+                if (automate->matriceTransition[i][j][k] > 1){
+                    printf("L'automate n'est pas deterministe");
+                    exit(EXIT_FAILURE);
+                }
+            }
+        }
+    }
+}
+
+void complementaireautomate(Automate* automate){
+    int i, j, k;
+    for (i = 0; i < automate->nombreEtats; i++) {
+        for (j = 0; j < automate->nombreEvenements; j++) {
+            for (k = 0; k < automate->nombreEtats; k++) {
+                if (automate->matriceTransition[i][j][k] == 0){
+                    automate->matriceTransition[i][j][k] = 1;
+                }
+                else{
+                    automate->matriceTransition[i][j][k] = 0;
+                }
+            }
+        }
+    }
 }
 
 int main() {
