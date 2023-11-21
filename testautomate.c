@@ -1,5 +1,5 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 // Structure représentant un automate
 typedef struct {
@@ -74,6 +74,33 @@ void deserialiserAutomate(const char* nomFichier, Automate* automate) {
 
     fclose(fichier);
 }
+ 
+
+// Fonction pour afficher l'automate
+void afficherAutomate(Automate* automate) {
+    int i, j, k;
+
+    printf("Matrice de transition :\n");
+    for (i = 0; i < automate->nombreEtats; i++) {
+        for (j = 0; j < automate->nombreEvenements; j++) {
+            for (k = 0; k < automate->nombreEtats; k++) {
+                printf("%d-%d:%d ", i, j, automate->matriceTransition[i][j][k]);
+            }
+            printf("\n");
+        }
+        printf("\n");
+    }
+
+    printf("Etats finaux : ");
+    for (i = 0; i < automate->nombreEtats; i++) {
+        if (automate->etatsFinaux[i] == 1) {
+            printf("%d ", i);
+        }
+    }
+    printf("\n");
+
+    printf("Etat initial : %d\n", automate->etatInitial);
+}
 
 int main() {
     // Initialisation de la structure Automate
@@ -99,8 +126,8 @@ int main() {
     Automate automateDeserialise;
     deserialiserAutomate("automate.dat", &automateDeserialise);
 
-    // Utilisation de l'automate désérialisé
-    // ...
+    // Affichage de l'automate
+    afficherAutomate(&automateDeserialise);
 
     // Libération de la mémoire allouée pour l'automate
     libererAutomate(&monAutomate);
