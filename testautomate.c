@@ -10,6 +10,8 @@ typedef struct {
     int nombreEvenements;      // Nombre d'événements dans l'automate
 } Automate;
 
+
+
 // Fonction pour initialiser un automate (à appeler avant utilisation)
 void initialiserAutomate(Automate* automate, int nombreEtats, int nombreEvenements) {
     int i, j;
@@ -73,6 +75,50 @@ void deserialiserAutomate(const char* nomFichier, Automate* automate) {
     fread(automate, sizeof(Automate), 1, fichier);
 
     fclose(fichier);
+}
+
+void verifierautomatecomplete(Automate* automate){
+    int i, j, k;
+    for (i = 0; i < automate->nombreEtats; i++) {
+        for (j = 0; j < automate->nombreEvenements; j++) {
+            for (k = 0; k < automate->nombreEtats; k++) {
+                if (automate->matriceTransition[i][j][k] == 0){
+                    printf("L'automate n'est pas complet");
+                    exit(EXIT_FAILURE);
+                }
+            }
+        }
+    }
+}
+
+void verifierautomatedeterministe(Automate* automate){
+    int i, j, k;
+    for (i = 0; i < automate->nombreEtats; i++) {
+        for (j = 0; j < automate->nombreEvenements; j++) {
+            for (k = 0; k < automate->nombreEtats; k++) {
+                if (automate->matriceTransition[i][j][k] > 1){
+                    printf("L'automate n'est pas deterministe");
+                    exit(EXIT_FAILURE);
+                }
+            }
+        }
+    }
+}
+
+void complementaireautomate(Automate* automate){
+    int i, j, k;
+    for (i = 0; i < automate->nombreEtats; i++) {
+        for (j = 0; j < automate->nombreEvenements; j++) {
+            for (k = 0; k < automate->nombreEtats; k++) {
+                if (automate->matriceTransition[i][j][k] == 0){
+                    automate->matriceTransition[i][j][k] = 1;
+                }
+                else{
+                    automate->matriceTransition[i][j][k] = 0;
+                }
+            }
+        }
+    }
 }
 
 int main() {
