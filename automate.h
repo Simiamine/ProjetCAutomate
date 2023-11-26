@@ -1,30 +1,37 @@
 #ifndef AUTOMATE_H_
-		#ifndef AUTOMATE
 	#define AUTOMATE_H_
+		#ifndef AUTOMATE
 			#define WHERE_AUTOMATE extern
 		#else
-		#endif
 			#define WHERE_AUTOMATE
+		#endif
 
-		typedef struct {
+		typedef struct { 
+            int state;
+            struct listOfState *next;
+        } listOfState; // linked list of states
+
+        typedef struct {
+            char event;
+            struct listOfEvents *next;
+        } listOfEvents; // linked list of events
+        
+        
+        
+        
+        typedef struct {
             int numberOfStates;       // Number of states in the automaton
             int numberOfEvents;       // Number of events in the automaton
             listOfState** Matrix;  // Dynamic matrix line=states and colomn=events
             int* finalStates;         // list of final states PK NE PAS METTRE LISTOFSTATE ICI PUISQUE QUE LE TAILLE DE CETTE LISTE PEUT VARIER
             int* initialStates;  // list of initial states MEME REMARQUE ICI
             listOfEvents* events; // list of events
-            
+            struct Automaton* nextAutomaton; // A VOIR AVK LES AUTRES 
         } Automaton;
 
-        typedef struct { 
-            int state;
-            listOfState* next;
-        } listOfState; // linked list of states
+        
 
-        typedef struct {
-            char event;
-            listOfEvents* next;
-        } listOfEvents; // linked list of events
+        
 
 
         // Automaton creation
