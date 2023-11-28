@@ -44,24 +44,3 @@ Automate* initAutomate(int nombreEtats, int nombreEvent) {
             }
         }
     }
-
-    // Allouer et initialiser les états finaux et initiaux
-    automate->etatsFinaux = malloc(sizeof(listetats) * nombreEtats);
-    automate->etatsInitiaux = malloc(sizeof(listetats) * nombreEtats);
-    for (int i = 0; i < nombreEtats; i++) {
-        automate->etatsFinaux[i].etat = 0;
-        automate->etatsFinaux[i].suivant = NULL;
-        automate->etatsInitiaux[i].etat = 0;
-        automate->etatsInitiaux[i].suivant = NULL;
-    }
-
-    // Initialiser la liste des événements à NULL
-    automate->listeEvent = NULL;
-
-    return automate;
-}
-
-void main() {
-
-
-}
