@@ -14,7 +14,7 @@ void inputAutomaton(Automaton* listOfautomaton){
     printf("\nNous allons procéder à la création d'un automate.");
     
     Automaton * newAutomate;
-    newAutomate=(Automate*)malloc(sizeof(Automate)*1);
+    newAutomate=(Automaton*)malloc(sizeof(Automaton)*1);
 
 	if(newAutomate){ // si la case a ete bien alloué
 		newAutomate->numberOfStates=0;
