@@ -36,8 +36,16 @@
         listOfState* searchState(listOfState*, int);
         void freeState(listOfState*);
         void displayStates(listOfState* );
-
         
+
+
+        //events Manipulation
+        listOfEvents* createEvent(char);
+        void addEvent(listOfEvents**, listOfEvents*);
+        void deleteEvent(listOfEvents*, char );
+        listOfEvents* searchEvent(listOfEvents*, char);
+        void freeEvent(listOfEvents*);
+        void displayEvents(listOfEvents* );       
 
 
 
@@ -49,6 +57,9 @@
         void navigateAutomaton(Automaton);
         listOfState enterCellsMatrix(int, int); 
         void interpreteMatrix(Automaton);
+        void initiateInitialStates(Automaton*);
+        void initiateEvents(Automaton* );
+        void initiateFinalState(Automaton *);
 
         //Automaton in files
         void serialization(Automaton);

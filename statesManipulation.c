@@ -43,7 +43,7 @@ void displayStates(listOfState* list){
     
     while(list!=NULL){
         
-        printf("\nNumero de l'etat : %d", list->state);
+        printf("\nNumero de l'etat : %d\n", list->state);
         list=list->next;
         
     }
@@ -57,8 +57,15 @@ void deleteState(listOfState*, int ){ // attention faudra changer les id des aut
 }
 
 
-listOfState* searchstate(listOfState*, int){
+listOfState* searchState(listOfState* list, int id){
+    while(list!=NULL){
+        if(list->state==id){
+            return list;
+        }
+        list=list->next;
+    }
 
+    return NULL;
 
 
 }
