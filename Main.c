@@ -2,24 +2,26 @@
 #include <stdio.h>
 #include <string.h>
 #include "automate.h"
-#include "automateCreation.h"
+//#include "automateCreation.h"
+int allocPB = 0;
+
 
 void afficheMenu(){
     printf("\n\t Menu\n\n");
     printf("\n1\tSaisir un AEF");
-    printf("\n2\tImporter un AEF à partir d'un fichier");
+    printf("\n2\tImporter un AEF a partir d'un fichier");
     printf("\n3\tModifier un AEF");
     printf("\n4\tSauvegarder un AEF sur un fichier");
     printf("\n5\tSupprimer un AEF");
-    printf("\n6\tReconnaître un mot");
-    printf("\n7\tVérifier si un AEF est complet");
+    printf("\n6\tReconnaitre un mot");
+    printf("\n7\tVerifier si un AEF est complet");
     printf("\n8\tRendre un AEF complet");
-    printf("\n9\tVérifier si un AEF est deterministe");
+    printf("\n9\tVerifier si un AEF est deterministe");
     printf("\n10\tRendre un AEF deterministe");
-    printf("\n11\tComplément d'un AEF");
+    printf("\n11\tComplement d'un AEF");
     printf("\n12\tMirroir d'un AEF");
     printf("\n13\tProduit de deux AEF");
-    printf("\n14\tConcaténation de deux AEF");
+    printf("\n14\tConcatenation de deux AEF");
     printf("\n0\tQuitter\n");
 }
 
@@ -28,8 +30,9 @@ int main(){
     Automaton* listOfAutomaton ;
     printf("Bienvenue !\n");
     int choix=0;
+    
     do{
-        
+        afficheMenu();
 
 
         printf("Choix : ");
@@ -105,7 +108,7 @@ int main(){
         }
 
 
-    }while(choix!=0);
+    }while((choix!=0)&(!allocPB));
 
     return EXIT_SUCCESS;
 
