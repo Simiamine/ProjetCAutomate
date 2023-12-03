@@ -72,7 +72,7 @@ void initiateAutomaton(Automaton* newAutomaton){
 
     for( int i=0; i+1<newAutomaton->numberOfStates; i++){
         int idState;
-        printf("%d) Numero de l'etat initial : ", i+1);
+        printf("%d) Numero de l'etat initial : ", i+1); // controle à faire 
         scanf("%d", &idState);
         listOfState* newState = createState(idState);
         
