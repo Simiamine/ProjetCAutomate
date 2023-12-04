@@ -14,8 +14,16 @@ void inputAutomaton(Automate* listOfautomaton){
     printf("\nNous allons proceder a la creation d'un automate.");
     
     int nbEtat;
-    printf("\nNombre d'etat : ");
-    scanf("%d", &nbEtat);
+    int verif;
+    do{
+        //vider la tampon 
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+        
+        printf("\nNombre d'etat : ");
+        verif=scanf("%d", &nbEtat);
+    }while(verif!=1);
+    
     
     int nbEvenement;
     printf("\nNombre d'evenement : ");
