@@ -1,3 +1,4 @@
+
 #ifndef AUTOMATE_H_
 		#ifndef AUTOMATE
 	#define AUTOMATE_H_
