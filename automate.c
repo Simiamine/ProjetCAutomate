@@ -18,10 +18,10 @@ typedef struct listevents {
 typedef struct {
     int nombreEtats;           // Nombre d'états dans l'automate
     int nombreEvent;      // Nombre d'événements dans l'automate
-    listetats*** matriceTransition;  // Matrice dynamique
-    listetats* etatsFinaux;          // Tableau d'entiers
-    listetats* etatsInitiaux;           // État initial
-    listevents* listeEvent; // Liste des événements
+    int*** matriceTransition;  // Matrice dynamique contenant les transitions : matriceTransition[etat][event][etatsliés] avec etat liés = 1 si lié et 0 sinon
+    int* etatsFinaux;          // Tableau d'entiers de taille nbEtats : 1 si final et 0 sinon
+    int* etatsInitiaux;           //  Tableau d'entiers de taille nbEtats : 1 si initial et 0 sinon
+    char* listeEvent; // Liste des événements : listeEvent[event] = lettre de l'événement à l'indice event
 } Automate;
 
 Automate* initAutomate(int nombreEtats, int nombreEvent) {
@@ -63,5 +63,5 @@ Automate* initAutomate(int nombreEtats, int nombreEvent) {
 
 void main() {
 
-
+etat 0 --(a)--> etat 2
 }
