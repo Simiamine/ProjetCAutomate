@@ -1,104 +1,67 @@
-// Structure representing an automaton
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+
+// Structure representant les etats lies par un evenment
+typedef struct listetats {
+    int etat;
+    struct listetats* suivant;
+} listetats;
+
+// Structure representant les evenements
+typedef struct listevents {
+    char event;
+    struct listevents* suivant;
+} listevents;
+
+// Structure representant un automate
 typedef struct {
-    int*** transitionMatrix;  // Dynamic matrix
-    int* finalStates;         // Array of integers
-    int initialState;         // Initial state
-    int numberOfStates;       // Number of states in the automaton
-    int numberOfEvents;       // Number of events in the automaton
-} Automaton;
+    int nombreEtats;           // Nombre d'états dans l'automate
+    int nombreEvent;      // Nombre d'événements dans l'automate
+    int*** matriceTransition;  // Matrice dynamique contenant les transitions : matriceTransition[etat][event][etatsliés] avec etat liés = 1 si lié et 0 sinon
+    int* etatsFinaux;          // Tableau d'entiers de taille nbEtats : 1 si final et 0 sinon
+    int* etatsInitiaux;           //  Tableau d'entiers de taille nbEtats : 1 si initial et 0 sinon
+    char* listeEvent; // Liste des événements : listeEvent[event] = lettre de l'événement à l'indice event
+} Automate;
 
-// Function to initialize an automaton (to be called before use)
-void initializeAutomaton(Automaton* automaton, int numberOfStates, int numberOfEvents) {
-    int i, j;
+Automate* initAutomate(int nombreEtats, int nombreEvent) {
+    // Allouer de la mémoire pour l'automate
+    Automate* automate = malloc(sizeof(Automate));
 
-    automaton->numberOfStates = numberOfStates;
-    automaton->numberOfEvents = numberOfEvents;
+    // Initialiser le nombre d'états et le nombre d'événements
+    automate->nombreEtats = nombreEtats;
+    automate->nombreEvent = nombreEvent;
 
-    // Allocation of the dynamic matrix
-    automaton->transitionMatrix = (int***)malloc(numberOfStates * sizeof(int**));
-    for (i = 0; i < numberOfStates; i++) {
-        automaton->transitionMatrix[i] = (int**)malloc(numberOfEvents * sizeof(int*));
-        for (j = 0; j < numberOfEvents; j++) {
-            automaton->transitionMatrix[i][j] = (int*)malloc(numberOfStates * sizeof(int));
+    // Allouer et initialiser la matrice de transition
+    automate->matriceTransition = malloc(sizeof(listetats**) * nombreEtats);
+    for (int i = 0; i < nombreEtats; i++) {
+        automate->matriceTransition[i] = malloc(sizeof(listetats*) * nombreEvent);
+        for (int j = 0; j < nombreEvent; j++) {
+            automate->matriceTransition[i][j] = malloc(sizeof(listetats) * nombreEtats);
+            for (int k = 0; k < nombreEtats; k++) {
+                automate->matriceTransition[i][j][k].etat = 0;
+                automate->matriceTransition[i][j][k].suivant = NULL;
+            }
         }
     }
 
-    // Initialization of the final states
-    automaton->finalStates = (int*)malloc(numberOfStates * sizeof(int));
-}
-
-// Function to free the memory allocated to an automaton
-void freeAutomaton(Automaton* automaton) {
-    int i, j;
-
-    // Freeing the memory of the dynamic matrix
-    for (i = 0; i < automaton->numberOfStates; i++) {
-        for (j = 0; j < automaton->numberOfEvents; j++) {
-            free(automaton->transitionMatrix[i][j]);
-        }
-        free(automaton->transitionMatrix[i]);
-    }
-    free(automaton->transitionMatrix);
-
-    // Freeing the memory of the final states
-    free(automaton->finalStates);
-}
-
-// Function to serialize the automaton into a file
-void serializeAutomaton(const char* fileName, const Automaton* automaton) {
-    FILE* file = fopen(fileName, "wb");
-    if (file == NULL) {
-        perror("Error opening file");
-        exit(EXIT_FAILURE);
+    // Allouer et initialiser les états finaux et initiaux
+    automate->etatsFinaux = malloc(sizeof(listetats) * nombreEtats);
+    automate->etatsInitiaux = malloc(sizeof(listetats) * nombreEtats);
+    for (int i = 0; i < nombreEtats; i++) {
+        automate->etatsFinaux[i].etat = 0;
+        automate->etatsFinaux[i].suivant = NULL;
+        automate->etatsInitiaux[i].etat = 0;
+        automate->etatsInitiaux[i].suivant = NULL;
     }
 
-    // Writing the Automaton structure to the file
-    fwrite(automaton, sizeof(Automaton), 1, file);
+    // Initialiser la liste des événements à NULL
+    automate->listeEvent = NULL;
 
-    fclose(file);
+    return automate;
 }
 
-// Function to deserialize the automaton from a file
-void deserializeAutomaton(const char* fileName, Automaton* automaton) {
-    FILE* file = fopen(fileName, "rb");
-    if (file == NULL) {
-        perror("Error opening file");
-        exit(EXIT_FAILURE);
-    }
+void main() {
 
-    // Reading the Automaton structure from the file
-    fread(automaton, sizeof(Automaton), 1, file);
-
-    fclose(file);
+etat 0 --(a)--> etat 2
 }
-
-int main() {
-    // Initializing the Automaton structure
-    Automaton myAutomaton;
-    initializeAutomaton(&myAutomaton, 3, 2);
-
-    // Example initialization of the automaton with your data
-    myAutomaton.transitionMatrix[0][0][0] = 1;  // 0-0:0
-    myAutomaton.transitionMatrix[0][1][1] = 1;  // 0-1:1
-    myAutomaton.transitionMatrix[1][0][2] = 1;  // 1-0:2
-    myAutomaton.transitionMatrix[1][1][0] = 1;  // 1-1:0
-    myAutomaton.transitionMatrix[2][0][2] = 1;  // 2-0:2
-    myAutomaton.transitionMatrix[2][1][0] = 1;  // 2-1:0
-
-    myAutomaton.finalStates[0] = 1;  // State 0 is final
-    myAutomaton.finalStates[2] = 1;  // State 2 is final
-    myAutomaton.initialState = 0;
-
-    // Serializing the automaton into a file
-    serializeAutomaton("automaton.dat", &myAutomaton);
-
-    // Deserializing the automaton from the file
-    Automaton deserializedAutomaton;
-    deserializeAutomaton("automaton.dat", &deserializedAutomaton);
-
-    // Using the deserialized automaton
-    // ...
-
-    // Freeing the memory allocated for the automaton
-    freeAutomaton(&myAutomaton);
-    freeAutomaton(&deserializedAutomaton);
