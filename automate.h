@@ -15,6 +15,7 @@
         // Automaton creation
         Automate* initAutomate(int , int);
         void remplirAEF(Automate* );
+        Automate* saisirAutomate();
 
 
 

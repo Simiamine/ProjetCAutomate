@@ -5,36 +5,48 @@
 #include "automate.h"
 
 
+
+
 /**
  * Function to gather all the basic information to create the automaton
  * input : NONE
  * output : NONE
 **/
-void inputAutomaton(Automate* listOfautomaton){
+Automate* saisirAutomate(){
     printf("\nNous allons proceder a la creation d'un automate.");
     
-    int nbEtat;
+    unsigned int nbEtat;
     int verif;
-    do{
-        //vider la tampon 
+    do {
+        // Vider le tampon d'entrée
         int c;
         while ((c = getchar()) != '\n' && c != EOF);
-        
+
         printf("\nNombre d'etat : ");
-        verif=scanf("%d", &nbEtat);
-    }while(verif!=1);
+        verif = scanf("%u", &nbEtat);
+
+        // Vérifier si c'est un entier positif
+        if (verif != 1 || nbEtat <= 0) {
+            printf("\nErreur : Veuillez rentrer un nombre entier positif.\n");
+        }
+    } while (verif != 1 || nbEtat <= 0);
+
+    printf("===%d", nbEtat);
     
     
     int nbEvenement;
     printf("\nNombre d'evenement : ");
     scanf("%d", &nbEvenement);
     
-    Automate* newAutomate = intiAutomate(nbEtat, nbEvenement);
+    Automate* newAutomate = initAutomate(nbEtat, nbEvenement);
     
 
     // ajout d'information 
     if (newAutomate){
          remplirAEF(newAutomate); 
+        return newAutomate;
+    }else{
+        return NULL;
     }
     
 
@@ -67,7 +79,7 @@ Automate* initAutomate(int nombreEtats, int nombreEvent) {
 
 
     }else{
-        allocPB=1;
+        allocPB=1; // informe au main des problemes d'allocation
     }
 
     
