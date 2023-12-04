@@ -54,12 +54,16 @@
 		void inputAutomaton(Automaton* );
         Automaton* createAutomaton();
         void initiateAutomaton(Automaton* );
-        void navigateAutomaton(Automaton);
-        listOfState enterCellsMatrix(int, int); 
+        void navigateAutomaton(Automaton*);
+        listOfState* enterCellsMatrix(int  , listOfEvents* , int ); 
         void interpreteMatrix(Automaton);
         void initiateInitialStates(Automaton*);
         void initiateEvents(Automaton* );
         void initiateFinalState(Automaton *);
+        void createIntitialState(Automaton* , int  );
+        void createFinalState(Automaton* , int );
+        void createNewEvent(Automaton* , int );
+        void createMatrix(Automaton*  );
 
         //Automaton in files
         void serialization(Automaton);
@@ -70,9 +74,7 @@
         void changeInitialStates(Automaton);
         void changeCells(Automaton);
 
-        //Creation in Automaton
-        void createStateInAutomaton(Automaton);
-        void createEventInAutomaton(Automaton);
+        
 
         //Suppression in Automaton
         void deleteAutomaton(Automaton);

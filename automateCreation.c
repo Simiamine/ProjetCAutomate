@@ -77,6 +77,8 @@ void initiateAutomaton(Automaton* newAutomaton){
     initiateEvents(newAutomaton);
     printf("Voici la liste des evenements");
     displayEvents(newAutomaton->events);
+
+    navigateAutomaton(newAutomaton);
     
 
 
@@ -90,10 +92,17 @@ void initiateInitialStates(Automaton* newAutomaton){
         printf("Nombre d'etat initiaux (Attention doit etre <%d et >0): ", newAutomaton->numberOfStates+1);
         scanf("%d",&nbInitialState );
         
-    }while((nbInitialState>newAutomaton->numberOfStates)||(nbInitialState<=0)); // est ce qu'on peut avoir autant d'etat que d'etat initiaux ?
+    }while((nbInitialState>newAutomaton->numberOfStates)||(nbInitialState<=0)); // est ce qu'on peut avoir autant d'etat que d'etat initiaux ? + resoudre le probeleme de si le mec rentre des lettres
 
     for( int i=0; i<nbInitialState; i++){
-        int idState;
+        createIntitialState(newAutomaton,i);
+    }
+    
+    
+}
+
+void createIntitialState(Automaton* newAutomaton, int i ){
+    int idState;
         int pb=0;
         do{
             pb=0;
@@ -117,9 +126,7 @@ void initiateInitialStates(Automaton* newAutomaton){
         
         addState(&newAutomaton->initialStates,newState);
 
-    }
-    
-    
+
 }
 
 void initiateFinalState(Automaton *new){
@@ -132,7 +139,13 @@ void initiateFinalState(Automaton *new){
     }while((nbFinalState>new->numberOfStates)||(nbFinalState<=0)); // est ce qu'on peut avoir autant d'etat que d'etat initiaux ?
 
     for( int i=0; i<nbFinalState; i++){
-        int idState;
+        createFinalState(new, i);
+
+    }
+}
+
+void createFinalState(Automaton* new, int i){
+    int idState;
         int pb=0;
         do{
             pb=0;
@@ -156,12 +169,17 @@ void initiateFinalState(Automaton *new){
         
         addState(&new->finalStates,newState);
 
-    }
 }
 
 void initiateEvents(Automaton* new ){
+    printf("\tRappel %d evenement(s) a creer",new->numberOfEvents );
     for(int i=0; i<new->numberOfEvents;i++){
-        char id;
+        createNewEvent(new, i);
+    }
+}
+
+void createNewEvent(Automaton* new, int i){
+    char id;
         int pb;
         do{
             pb=0;
@@ -187,19 +205,69 @@ void initiateEvents(Automaton* new ){
         listOfEvents* newEvent = createEvent(tolower(id));
         
         addEvent(&new->events,newEvent);
+
+}
+
+
+
+void navigateAutomaton(Automaton* new){
+    createMatrix(new);
+    for(int state=0 ; (state<new->numberOfStates) ; state++ ){
+        for(int event=0; event<new->numberOfEvents;event++){
+            new->Matrix[state][event]=enterCellsMatrix(state, &(new->events[event]), new->numberOfStates);
+        }
+        
+    }
+    
+
+
+}
+
+void createMatrix(Automaton* new ){
+    listOfState*** newMatrix= (listOfState***)malloc(new->numberOfStates*sizeof(listOfState**));
+    if(newMatrix){
+        
+        for(int i =0; i<new->numberOfStates;i++){
+            newMatrix[i]=(listOfState**)malloc(new->numberOfEvents * sizeof(listOfState*));
+            for(int j=0;j<new->numberOfEvents;j++){
+                newMatrix[i][j]=(listOfState*)malloc(sizeof(listOfState));
+
+            }
+        }
+        new->Matrix=newMatrix;
+    }else{
+        allocPB=1;
     }
 }
 
 
+listOfState* enterCellsMatrix(int state , listOfEvents* event, int totalNbState){
+    listOfState* newList =  NULL;
+    for (int i= 0; i<totalNbState;i++ ){
+        
+        int rep;
+        int pb =0;
+        do{
+            pb=0;
+            printf("Si l'etat %d va vers l'etat %d par l'evenement %c, rentrer 1 sinon 0\nReponse : ", state, i,event->event);
+            scanf("%d",&rep);
+            if((rep!=0)&&(rep!=1)){
+                printf("Erreur rentrer 1 ou 0.\n");
+                pb=1;
+            }
+        }while(pb);
+        
+        listOfState* new = createState(rep);
+        addState(&newList,new);
+
+        
+    }
+
+    return newList;
+
+}
+
 /*
-void navigateAutomaton(Automaton){
-
-
-}
-listOfState enterCellsMatrix(int, int){
-
-
-}
 void interpreteMatrix(Automaton){
 
 
