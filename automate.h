@@ -13,9 +13,9 @@
         } Automate;
 
         // Automaton creation
-        Automate* intiAutomate(int , int);
-        Automate* remplirAEF(Automate* );
-      
+        Automate* initAutomate(int , int);
+        void remplirAEF(Automate* );
+
 
 
 
