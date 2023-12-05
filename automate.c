@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
-
+#include <gtk/gtk.h>
 
 // Structure representant un automate
 typedef struct {
@@ -115,31 +115,7 @@ void afficherAEF(Automate* automate) {
     }
 }
 
-void generateDot(Automate* automate) {
-    printf("digraph G {\n");
 
-    // Créer un nœud pour chaque état
-    for (int i = 0; i < automate->nombreEtats; i++) {
-        if (automate->etatsFinaux[i] == 1) {
-            printf("  %d [shape=doublecircle];\n", i+1);
-        } else {
-            printf("  %d;\n", i+1);
-        }
-    }
-
-    // Créer une arête pour chaque transition
-    for (int i = 0; i < automate->nombreEtats; i++) {
-        for (int j = 0; j < automate->nombreEvent; j++) {
-            for (int k = 0; k < automate->nombreEtats; k++) {
-                if (automate->matriceTransition[i][j][k] == 1) {
-                    printf("  %d -> %d [label=\"%c\"];\n", i+1, k+1, automate->listeEvent[j]);
-                }
-            }
-        }
-    }
-
-    printf("}\n");
-}
 void freeAutomate(Automate* automate) {
     // Libérer la mémoire allouée pour la matrice de transition
     for (int i = 0; i < automate->nombreEtats; i++) {
@@ -160,7 +136,36 @@ void freeAutomate(Automate* automate) {
     // Libérer la mémoire allouée pour l'automate
     free(automate);
 }
+void afficherAutomateGraphiquement(Automate* automate) {
+    GtkWidget *window, *drawing_area;
 
+    gtk_init(NULL, NULL);
+
+    // Créer une fenêtre
+    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(window), "Automate Graphique");
+    g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+
+    // Créer une zone de dessin
+    drawing_area = gtk_drawing_area_new();
+    gtk_container_add(GTK_CONTAINER(window), drawing_area);
+
+    g_signal_connect(drawing_area, "draw", G_CALLBACK(on_draw_event), automate);
+
+    // Afficher la fenêtre
+    gtk_widget_show_all(window);
+
+    gtk_main();
+}
+
+// Fonction appelée lorsqu'un événement de dessin se produit
+gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
+    Automate* automate = (Automate*)user_data;
+
+    // Dessinez votre automate ici en utilisant cairo
+
+    return FALSE;
+}
 int main() {
     // Initialiser un automate avec 3 états et 2 événements
     Automate* automate = initAutomate(3, 2);
@@ -175,7 +180,7 @@ int main() {
 
     // Générer la description dot de l'automate
     generateDot(automate);
-
+    system("dot -Tpng -o automate.png automate.dot && eog automate.png");
     // Libérer la mémoire allouée pour l'automate
     freeAutomate(automate);
 
