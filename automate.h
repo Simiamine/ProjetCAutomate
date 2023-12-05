@@ -7,33 +7,21 @@
 		#endif
 			#define WHERE_AUTOMATE
 
-		typedef struct {
-            int numberOfStates;       // Number of states in the automaton
-            int numberOfEvents;       // Number of events in the automaton
-            listOfState** Matrix;  // Dynamic matrix line=states and colomn=events
-            int* finalStates;         // list of final states PK NE PAS METTRE LISTOFSTATE ICI PUISQUE QUE LE TAILLE DE CETTE LISTE PEUT VARIER
-            int* initialStates;  // list of initial states MEME REMARQUE ICI
-            listOfEvents* events; // list of events
-            
-        } Automaton;
-
-        typedef struct { 
-            int state;
-            listOfState* next;
-        } listOfState; // linked list of states
-
-        typedef struct {
-            char event;
-            listOfEvents* next;
-        } listOfEvents; // linked list of events
-
+    typedef struct {
+        int nombreEtats;           // Nombre d'états dans l'automate
+        int nombreEvent;      // Nombre d'événements dans l'automate
+        int*** matriceTransition;  // Matrice dynamique contenant les transitions : matriceTransition[etat][event][etatsliés] avec etat liés = 1 si lié et 0 sinon
+        int* etatsFinaux;          // Tableau d'entiers de taille nbEtats : 1 si final et 0 sinon
+        int* etatsInitiaux;           //  Tableau d'entiers de taille nbEtats : 1 si initial et 0 sinon
+        char* listeEvent; // Liste des événements : listeEvent[event] = lettre de l'événement à l'indice event
+    } Automaton;
 
         // Automaton creation
 		WHERE_AUTOMATE void inputAutomaton();
         WHERE_AUTOMATE void createAutomaton();
         WHERE_AUTOMATE Automaton initiateAutomaton(int, int);
         WHERE_AUTOMATE void navigateAutomaton(Automaton);
-        WHERE_AUTOMATE listOfState enterCellsMatrix(int, int); 
+        WHERE_AUTOMATE int* enterCellsMatrix(int, int); 
         WHERE_AUTOMATE void interpreteMatrix(Automaton);
 
         //Automaton in files
