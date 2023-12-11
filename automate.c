@@ -4,6 +4,7 @@
 #include <string.h>
 
 
+
 // Structure representant un automate
 typedef struct {
     int nombreEtats;           // Nombre d'etats dans l'automate
@@ -654,7 +655,7 @@ bool estComplet(Automate* automate) {
     // Si tous les etats ont passe le test, l'automate est complet
     return true;
 }
-// rendreDeterministe qui va permettre de rendre l'automate deterministe en partant de l'automate chargé et en lui ajoutant un etat poubelle qui sera lie a tous les etats qui n'ont pas de transition pour un evenement
+// rendreDeterministe qui va permettre de rendre l'automate deterministe en partant de l'automate charge et en lui ajoutant un etat poubelle qui sera lie a tous les etats qui n'ont pas de transition pour un evenement
 Automate* rendreDeterministe(Automate* automate) {
     // Si l'automate est deterministe, on ne fait rien
     if (estDeterministe(automate)) {
@@ -665,7 +666,60 @@ Automate* rendreDeterministe(Automate* automate) {
     Automate* automateDeterministe = automate;
 
     ajouterEtat(automateDeterministe, 'p');
-    
+}
+
+// Function for operations on the automate
+void operationsAutomate() {
+    int choix;
+    Automate* automate1 = NULL;
+    Automate* automate2 = NULL;
+    do {
+        printf("Que voulez-vous faire ?\n");
+        printf("1. Verifier si l'automate est deterministe\n");
+        printf("2. Rendre l'automate deterministe\n");
+        printf("3. Verifier si l'automate est complet\n");
+        printf("4. Retourner au menu principal\n");
+        scanf("%d", &choix);
+        switch (choix) {
+            case 1:
+                if (automate1 != NULL) {
+                    freeAutomate(automate1);
+                }
+                automate1 = chargerAutomate();
+                afficherAEF(automate1);
+                if (estDeterministe(automate1)) {
+                    printf("L'automate est deterministe\n");
+                } else {
+                    printf("L'automate n'est pas deterministe\n");
+                }
+                break;
+            case 2:
+                if (automate1 != NULL) {
+                    freeAutomate(automate1);
+                }
+                automate1 = chargerAutomate();
+                automate1 = rendreDeterministe(automate1);
+                printf("L'automate a ete rendu deterministe\n");
+                break;
+            case 3:
+                if (automate1 != NULL) {
+                    freeAutomate(automate1);
+                }
+                automate1 = chargerAutomate();
+                if (estComplet(automate1)) {
+                    printf("L'automate est complet\n");
+                } else {
+                    printf("L'automate n'est pas complet\n");
+                }
+                break;
+            case 4:
+                return; // Return to the main menu
+            default:
+                printf("Erreur : choix invalide\n");
+                break;
+        }
+    } while (choix != 4);
+}
 
 // menu qui va permettre a l'utilisateur de choisir ce qu'il veut faire
 void menu() {
@@ -679,7 +733,8 @@ void menu() {
         printf("4. Enregistrer un automate\n");
         printf("5. Charger un automate\n");
         printf("6. Tester un mot\n");
-        printf("7. Quitter\n");
+        printf("7. Operations sur l'automate\n"); // Added option for operations on the automate
+        printf("8. Quitter\n");
         scanf("%d", &choix);
         switch (choix) {
             case 1:
@@ -736,6 +791,10 @@ void menu() {
                 }
                 break;
             case 7:
+                    printf("Vous allez effectuer des operations sur des automates charges a partir de fichiers.\n");
+                    operationsAutomate(); // Call the function for operations on the automate
+                break;
+            case 8:
                 if (automate != NULL) {
                     freeAutomate(automate);
                 }
@@ -744,8 +803,9 @@ void menu() {
                 printf("Erreur : choix invalide\n");
                 break;
         }
-    } while (choix != 7);
+    } while (choix != 8);
 }
+
 
 
 int main() {
