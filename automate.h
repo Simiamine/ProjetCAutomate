@@ -2,7 +2,8 @@
     #define AUTOMATE_H
 
 		extern int allocPB;
-        
+
+        // Structure representant un automate
         typedef struct {
             int nombreEtats;           // Nombre d'états dans l'automate
             int nombreEvent;      // Nombre d'événements dans l'automate
@@ -14,7 +15,7 @@
 
         // Automaton creation
         Automate* initAutomate(int , int);
-        void remplirAEF(Automate* );
+        Automate* remplirAEF(Automate* );
         Automate* saisirAutomate();
         int verifieEntree(int , int, int );
         void remplirEvenement(Automate* );

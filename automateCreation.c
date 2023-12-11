@@ -125,7 +125,8 @@ void remplirEvenement(Automate* automate){
     int verif;
     int pb;
     int reste;
-    printf("\nInitialisation des evenements");
+    // Demander a l'utilisateur de fournir la liste des evenements
+    printf("Veuillez fournir la liste des evenements :\n");
     for (int i = 0; i < automate->nombreEvent; i++){
         do{
             pb=0;
@@ -133,7 +134,7 @@ void remplirEvenement(Automate* automate){
             verif= scanf("%c", &(automate->listeEvent[i]));
             automate->listeEvent[i]=tolower(automate->listeEvent[i]);
             reste=getchar();
-            if (verif != 1 || isdigit(automate->listeEvent[i])||(reste!='\n')||rechercheEvenement(automate->listeEvent[i], i, automate->listeEvent)) {
+            if (verif != 1 || isdigit(automate->listeEvent[i])||(reste!='\n')||(automate->listeEvent[i]==' ')||rechercheEvenement(automate->listeEvent[i], i, automate->listeEvent)) {
                 pb=1;
                 printf("Erreur : Veuillez entrer un unique caractere different des precedents.\n");
                 if(reste!='\n'){
@@ -148,14 +149,15 @@ void remplirEvenement(Automate* automate){
     }
 }
 
-void remplirAEF(Automate* automate) {
+
+Automate* remplirAEF(Automate* automate) {
     // Parcourir chaque état
     int pb;
     remplirEvenement( automate);
 
 
 
-
+    // Parcourir chaque etat
     for (int i = 0; i < automate->nombreEtats; i++) {
         printf("Etat %d\n", i+1);
 
@@ -203,11 +205,25 @@ void remplirAEF(Automate* automate) {
 
             // Lire la liste des états liés à l'état i par l'événement j
             for (int k = 0; k < automate->nombreEtats; k++) {
-                printf("Etat %d est-il lie ? (1 pour oui, 0 pour non) : ", k+1);
-                scanf("%d", &(automate->matriceTransition[i][j][k]));
+                do{
+                    pb=0;
+                    printf("Etat %d est-il lie ? (1 pour oui, 0 pour non) : ", k+1);
+                    if(scanf("%d", &(automate->matriceTransition[i][j][k]))!=1){
+                        printf("\nErreur, veuillez rentrer 1 ou 0.\n");
+                        pb=1;
+                    }
+                    int c;
+                    while ((c = getchar()) != '\n' && c != EOF);
+                    if((automate->matriceTransition[i][j][k]!=1) & (automate->matriceTransition[i][j][k]!=0)){
+                        printf("\nErreur :veuillez rentrer soit 1 ou 0.\n");
+                        pb=1;
+                    }
+
+                }while(pb);
             }
         }
     }
+    return automate;
 
     
 }
