@@ -1,23 +1,24 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <gtk/gtk.h>
+#include <string.h>
+
 
 // Structure representant un automate
 typedef struct {
-    int nombreEtats;           // Nombre d'états dans l'automate
-    int nombreEvent;      // Nombre d'événements dans l'automate
-    int*** matriceTransition;  // Matrice dynamique contenant les transitions : matriceTransition[etat][event][etatsliés] avec etat liés = 1 si lié et 0 sinon
+    int nombreEtats;           // Nombre d'etats dans l'automate
+    int nombreEvent;      // Nombre d'evenements dans l'automate
+    int*** matriceTransition;  // Matrice dynamique contenant les transitions : matriceTransition[etat][event][etatslies] avec etat lies = 1 si lie et 0 sinon
     int* etatsFinaux;          // Tableau d'entiers de taille nbEtats : 1 si final et 0 sinon
     int* etatsInitiaux;           //  Tableau d'entiers de taille nbEtats : 1 si initial et 0 sinon
-    char* listeEvent; // Liste des événements : listeEvent[event] = lettre de l'événement à l'indice event
+    char* listeEvent; // Liste des evenements : listeEvent[event] = lettre de l'evenement a l'indice event
 } Automate;
 
 Automate* initAutomate(int nombreEtats, int nombreEvent) {
-    // Allouer de la mémoire pour l'automate
+    // Allouer de la memoire pour l'automate
     Automate* automate = malloc(sizeof(Automate));
 
-    // Initialiser le nombre d'états et le nombre d'événements
+    // Initialiser le nombre d'etats et le nombre d'evenements
     automate->nombreEtats = nombreEtats;
     automate->nombreEvent = nombreEvent;
 
@@ -30,11 +31,11 @@ Automate* initAutomate(int nombreEtats, int nombreEvent) {
         }
     }
 
-    // Allouer et initialiser les états finaux et initiaux
+    // Allouer et initialiser les etats finaux et initiaux
     automate->etatsFinaux = calloc(nombreEtats, sizeof(int));
     automate->etatsInitiaux = calloc(nombreEtats, sizeof(int));
 
-    // Allouer et initialiser la liste des événements
+    // Allouer et initialiser la liste des evenements
     automate->listeEvent = calloc(nombreEvent, sizeof(char));
 
     return automate;
@@ -42,34 +43,46 @@ Automate* initAutomate(int nombreEtats, int nombreEvent) {
 
 
 Automate* remplirAEF(Automate* automate) {
-    // Demander à l'utilisateur de fournir la liste des événements
-    printf("Veuillez fournir la liste des événements :\n");
+    // Demander a l'utilisateur de fournir la liste des evenements
+    printf("Veuillez fournir la liste des evenements :\n");
     for (int j = 0; j < automate->nombreEvent; j++) {
         printf("Event %d : ", j+1);
         scanf(" %c", &(automate->listeEvent[j])); // Notez l'espace avant %c pour ignorer les espaces blancs
     }
 
-    // Parcourir chaque état
+    // Parcourir chaque etat
     for (int i = 0; i < automate->nombreEtats; i++) {
         printf("Etat %d\n", i+1);
 
-        // Demander si l'état est initial
-        printf("Etat initial ? (1 pour oui, 0 pour non) : ");
-        scanf("%d", &(automate->etatsInitiaux[i]));
+        // Demander si l'etat est initial
+        int estInitial;
+        do {
+            printf("Etat initial ? (1 pour oui, 0 pour non) : ");
+            scanf("%d", &estInitial);
+        } while (estInitial != 0 && estInitial != 1);
+        automate->etatsInitiaux[i] = estInitial;
 
-        // Demander si l'état est final
-        printf("Etat final ? (1 pour oui, 0 pour non) : ");
-        scanf("%d", &(automate->etatsFinaux[i]));
+        // Demander si l'etat est final
+        int estFinal;
+        do {
+            printf("Etat final ? (1 pour oui, 0 pour non) : ");
+            scanf("%d", &estFinal);
+        } while (estFinal != 0 && estFinal != 1);
+        automate->etatsFinaux[i] = estFinal;
 
-        // Parcourir chaque événement
+        // Parcourir chaque evenement
         for (int j = 0; j < automate->nombreEvent; j++) {
             printf("Modification matrice transition\n");
             printf("Etat %d --(%c)--> ?\n", i+1, automate->listeEvent[j]);
 
-            // Lire la liste des états liés à l'état i par l'événement j
+            // Lire la liste des etats lies a l'etat i par l'evenement j
             for (int k = 0; k < automate->nombreEtats; k++) {
-                printf("Etat %d est-il lié ? (1 pour oui, 0 pour non) : ", k+1);
-                scanf("%d", &(automate->matriceTransition[i][j][k]));
+                int estLie;
+                do {
+                    printf("Etat %d est-il lie ? (1 pour oui, 0 pour non) : ", k+1);
+                    scanf("%d", &estLie);
+                } while (estLie != 0 && estLie != 1);
+                automate->matriceTransition[i][j][k] = estLie;
             }
         }
     }
@@ -78,22 +91,22 @@ Automate* remplirAEF(Automate* automate) {
 }
 
 void afficherAEF(Automate* automate) {
-    // Afficher la liste des événements
-    printf("Liste des événements :\n");
+    // Afficher la liste des evenements
+    printf("Liste des evenements :\n");
     for (int j = 0; j < automate->nombreEvent; j++) {
         printf("Event %d : %c\n", j+1, automate->listeEvent[j]);
     }
 
-    // Afficher les états initiaux
-    printf("Liste des états initiaux :\n");
+    // Afficher les etats initiaux
+    printf("Liste des etats initiaux :\n");
     for (int i = 0; i < automate->nombreEtats; i++) {
         if (automate->etatsInitiaux[i] == 1) {
             printf("Etat %d\n", i+1);
         }
     }
 
-    // Afficher les états finaux
-    printf("Liste des états finaux :\n");
+    // Afficher les etats finaux
+    printf("Liste des etats finaux :\n");
     for (int i = 0; i < automate->nombreEtats; i++) {
         if (automate->etatsFinaux[i] == 1) {
             printf("Etat %d\n", i+1);
@@ -117,7 +130,7 @@ void afficherAEF(Automate* automate) {
 
 
 void freeAutomate(Automate* automate) {
-    // Libérer la mémoire allouée pour la matrice de transition
+    // Liberer la memoire allouee pour la matrice de transition
     for (int i = 0; i < automate->nombreEtats; i++) {
         for (int j = 0; j < automate->nombreEvent; j++) {
             free(automate->matriceTransition[i][j]);
@@ -126,63 +139,616 @@ void freeAutomate(Automate* automate) {
     }
     free(automate->matriceTransition);
 
-    // Libérer la mémoire allouée pour les états finaux et initiaux
+    // Liberer la memoire allouee pour les etats finaux et initiaux
     free(automate->etatsFinaux);
     free(automate->etatsInitiaux);
 
-    // Libérer la mémoire allouée pour la liste des événements
+    // Liberer la memoire allouee pour la liste des evenements
     free(automate->listeEvent);
 
-    // Libérer la mémoire allouée pour l'automate
+    // Liberer la memoire allouee pour l'automate
     free(automate);
 }
-void afficherAutomateGraphiquement(Automate* automate) {
-    GtkWidget *window, *drawing_area;
 
-    gtk_init(NULL, NULL);
+void ajouterEtat(Automate* automate, char identifiant) {
+    // Augmenter le nombre d'etats
+    automate->nombreEtats++;
 
-    // Créer une fenêtre
-    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_title(GTK_WINDOW(window), "Automate Graphique");
-    g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+    // Ajouter l'etat a la liste des etats finaux
+    automate->etatsFinaux = realloc(automate->etatsFinaux, automate->nombreEtats * sizeof(int));
+    automate->etatsFinaux[automate->nombreEtats - 1] = 0;
 
-    // Créer une zone de dessin
-    drawing_area = gtk_drawing_area_new();
-    gtk_container_add(GTK_CONTAINER(window), drawing_area);
+    // Ajouter l'etat a la liste des etats initiaux
+    automate->etatsInitiaux = realloc(automate->etatsInitiaux, automate->nombreEtats * sizeof(int));
+    automate->etatsInitiaux[automate->nombreEtats - 1] = 0;
 
-    g_signal_connect(drawing_area, "draw", G_CALLBACK(on_draw_event), automate);
+    // Ajouter l'etat a la matrice de transition
+    automate->matriceTransition = realloc(automate->matriceTransition, automate->nombreEtats * sizeof(int**));
+    automate->matriceTransition[automate->nombreEtats - 1] = malloc(automate->nombreEvent * sizeof(int*));
+    for (int i = 0; i < automate->nombreEvent; i++) {
+        automate->matriceTransition[automate->nombreEtats - 1][i] = calloc(automate->nombreEtats, sizeof(int));
+    }
+    // Ajouter les transitions pour cet etat
+    for (int i = 0; i < automate->nombreEtats; i++) {
+        automate->matriceTransition[i] = realloc(automate->matriceTransition[i], automate->nombreEvent * sizeof(int*));
+        automate->matriceTransition[i][automate->nombreEvent - 1] = calloc(automate->nombreEtats, sizeof(int));
+    }
 
-    // Afficher la fenêtre
-    gtk_widget_show_all(window);
-
-    gtk_main();
 }
 
-// Fonction appelée lorsqu'un événement de dessin se produit
-gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
-    Automate* automate = (Automate*)user_data;
+void ajouterEvent(Automate* automate, char event) {
+    // Augmenter le nombre d'evenements
+    automate->nombreEvent++;
 
-    // Dessinez votre automate ici en utilisant cairo
+    // Ajouter l'evenement a la liste des evenements
+    automate->listeEvent = realloc(automate->listeEvent, automate->nombreEvent * sizeof(char));
+    automate->listeEvent[automate->nombreEvent - 1] = event;
 
-    return FALSE;
+    // Ajouter les nouvelles transitions
+    for (int i = 0; i < automate->nombreEtats; i++) {
+        automate->matriceTransition[i] = realloc(automate->matriceTransition[i], automate->nombreEvent * sizeof(int*));
+        automate->matriceTransition[i][automate->nombreEvent - 1] = calloc(automate->nombreEtats, sizeof(int));
+    }
 }
+//fonction qui va retrouver l'entier correspondant a la lettre de l'evenement
+int trouverindiceEvent(Automate* automate, char event) {
+    int indiceEvent = -1;
+    for (int j = 0; j < automate->nombreEvent; j++) {
+        if (automate->listeEvent[j] == event) {
+            indiceEvent = j;
+        }
+    }
+    return indiceEvent;
+}
+
+// fonction modifierTransition qui va permettre de modifier une transition de l'automate. va chercher l'event, inverser 0 et 1 pour la transition choisie
+void modifierTransition(Automate* automate, int etatDepart, int etatArrivee, char event) {
+    // Trouver l'indice de l'evenement correspondant a la lettre
+    int indiceEvent = trouverindiceEvent(automate, event);  
+    // Si l'evenement n'existe pas, le mot n'est pas valide
+    if (indiceEvent == -1) {
+        printf("Erreur : l'evenement n'existe pas\n");
+        return;
+    }
+
+    // Inverser la transition
+    if (automate->matriceTransition[etatDepart][indiceEvent][etatArrivee] == 1) {
+        automate->matriceTransition[etatDepart][indiceEvent][etatArrivee] = 0;
+    } else {
+        automate->matriceTransition[etatDepart][indiceEvent][etatArrivee] = 1;
+    }
+}
+
+
+// fonction transition qui va dire si la transition existe ou pas
+void transition(Automate* automate, int etatDepart, int etatArrivee, char event) {
+    // Trouver l'indice de l'evenement correspondant a la lettre
+    int indiceEvent = trouverindiceEvent(automate, event); 
+
+    // Si l'evenement n'existe pas, le mot n'est pas valide
+    if (indiceEvent == -1) {
+        printf("Erreur : l'evenement n'existe pas\n");
+        return;
+    }
+
+    // Si la transition existe
+    if (automate->matriceTransition[etatDepart][indiceEvent][etatArrivee] == 1) {
+        printf("La transition existe\n");
+    } else {
+        printf("La transition n'existe pas\n");
+    }
+}
+
+
+void ajouterEtatInitial(Automate* automate, int etat) {
+    // Ajouter l'etat a la liste des etats initiaux
+    automate->etatsInitiaux[etat] = 1;
+}
+
+void ajouterEtatFinal(Automate* automate, int etat) {
+    // Ajouter l'etat a la liste des etats finaux
+    automate->etatsFinaux[etat] = 1;
+}
+//fonction ModifierAutomate qui va permettre de modifier l'automate (changer les transitions actuelles), ajouter ou supprimer un etat (en configurant ses transitions et son charactere d'identification), des evenements (en configurant pour chaque etat la où il va servir), des etats initiaux et finaux.
+void ModifierAutomate(Automate* automate) {
+    int choix;
+    //Afficher l'automate
+    afficherAEF(automate);
+    //Demander a l'utilisateur ce qu'il veut faire
+    printf("Que voulez-vous faire ?\n");
+    printf("1. Modifier une transition\n");
+    printf("2. Ajouter un etat\n");
+    printf("3. Ajouter un evenement\n");
+    printf("4. Ajouter un etat initial\n");
+    printf("5. Ajouter un etat final\n");
+    printf("6. Supprimer un etat\n");
+    printf("7. Supprimer un evenement\n");
+    printf("8. Supprimer un etat initial\n");
+    printf("9. Supprimer un etat final\n");
+    printf("10. Quitter\n");
+    scanf("%d", &choix);
+    switch (choix) {
+        case 1:
+            printf("Quelle transition voulez-vous modifier ?\n");
+            int etatDepart, etatArrivee;
+            char event1;
+            printf("Etat de depart : ");
+            scanf("%d", &etatDepart);
+            printf("Etat d'arrivee : ");
+            scanf("%d", &etatArrivee);
+            printf("Event : ");
+            scanf(" %c", &event1);
+            printf("Valeur actuelle : %d\n", automate->matriceTransition[etatDepart][event1][etatArrivee]);
+            printf("Voulez vous l'inverser ? (1 pour oui, 0 pour non) : ");
+            int choixInversion;
+            scanf("%d", &choixInversion);
+            modifierTransition(automate, etatDepart, etatArrivee, event1);
+            break;
+        case 2:
+            printf("Quel est l'identifiant de l'etat a ajouter ?\n");
+            char identifiant;
+            scanf(" %c", &identifiant);
+            ajouterEtat(automate, identifiant);
+            break;
+        case 3:
+            printf("Quel est l'evenement a ajouter ?\n");
+            char event2;
+            scanf(" %c", &event2);
+            ajouterEvent(automate, event2);
+            break;
+        case 4:
+            printf("Quel est l'etat initial a ajouter ?\n");
+            int etatInitial;
+            scanf("%d", &etatInitial);
+            ajouterEtatInitial(automate, etatInitial);
+            break;
+        case 5:
+            printf("Quel est l'etat final a ajouter ?\n");
+            int etatFinal;
+            scanf("%d", &etatFinal);
+            ajouterEtatFinal(automate, etatFinal);
+            break;
+        case 6: //supprimer un etat
+            printf("Quel est l'etat a supprimer ?\n");
+            int etat;
+            scanf("%d", &etat);
+            for (int i = 0; i < automate->nombreEtats; i++) {
+                for (int j = 0; j < automate->nombreEvent; j++) {
+                    automate->matriceTransition[i][j][etat] = 0;
+                }
+            }
+            for (int i = 0; i < automate->nombreEtats; i++) {
+                for (int j = 0; j < automate->nombreEvent; j++) {
+                    automate->matriceTransition[etat][j][i] = 0;
+                }
+            }
+            break;
+        case 7: //supprimer un evenement
+            printf("Quel est l'evenement a supprimer ?\n");
+            int eventSuppr;
+            scanf("%d", &eventSuppr);
+            for (int i = 0; i < automate->nombreEtats; i++) {
+                automate->matriceTransition[i][eventSuppr][i] = 0;
+            }
+            break;
+        case 8: //supprimer un etat initial (on ne peut pas supprimer un etat initial qui est aussi final)
+            printf("Quel est l'etat initial a supprimer ?\n");
+            int etatInitialSuppr;
+            scanf("%d", &etatInitialSuppr);
+            automate->etatsInitiaux[etatInitialSuppr] = 0;
+            break;
+        case 9: //supprimer un etat final (on ne peut pas supprimer un etat final qui est aussi initial)
+            printf("Quel est l'etat final a supprimer ?\n");
+            int etatFinalSuppr;
+            scanf("%d", &etatFinalSuppr);
+            automate->etatsFinaux[etatFinalSuppr] = 0;
+            break;
+        case 10:
+            break;
+        default:
+            printf("Erreur : choix invalide\n");
+            break;
+    }
+}
+
+// enregistrer l'automate dans un fichier .json en demandant a l'utilisateur le nom du fichier et en verifiant si le fichier existe deja ou pas
+void enregistrerAutomate(Automate* automate) {
+    char nomFichier[100];
+    printf("Quel est le nom du fichier ?\n");
+    scanf("%s", nomFichier);
+    FILE* fichier = fopen(nomFichier, "r");
+    if (fichier != NULL) {
+        printf("Erreur : le fichier existe deja\n");
+        fclose(fichier);
+    } else {
+        fichier = fopen(nomFichier, "w");
+        fprintf(fichier, "{\n");
+        fprintf(fichier, "\t\"nombreEtats\" : %d,\n", automate->nombreEtats);
+        fprintf(fichier, "\t\"nombreEvent\" : %d,\n", automate->nombreEvent);
+        fprintf(fichier, "\t\"listeEvent\" : [\n");
+        for (int i = 0; i < automate->nombreEvent; i++) {
+            fprintf(fichier, "\t\t\"%c\"", automate->listeEvent[i]);
+            if (i < automate->nombreEvent - 1) {
+                fprintf(fichier, ",");
+            }
+            fprintf(fichier, "\n");
+        }
+        fprintf(fichier, "\t],\n");
+        fprintf(fichier, "\t\"etatsInitiaux\" : [\n");
+        for (int i = 0; i < automate->nombreEtats; i++) {
+            fprintf(fichier, "\t\t%d", automate->etatsInitiaux[i]);
+            if (i < automate->nombreEtats - 1) {
+                fprintf(fichier, ",");
+            }
+            fprintf(fichier, "\n");
+        }
+        fprintf(fichier, "\t],\n");
+        fprintf(fichier, "\t\"etatsFinaux\" : [\n");
+        for (int i = 0; i < automate->nombreEtats; i++) {
+            fprintf(fichier, "\t\t%d", automate->etatsFinaux[i]);
+            if (i < automate->nombreEtats - 1) {
+                fprintf(fichier, ",");
+            }
+            fprintf(fichier, "\n");
+        }
+        fprintf(fichier, "\t],\n");
+        fprintf(fichier, "\t\"matriceTransition\" : [\n");
+        for (int i = 0; i < automate->nombreEtats; i++) {
+            fprintf(fichier, "\t\t[\n");
+            for (int j = 0; j < automate->nombreEvent; j++) {
+                fprintf(fichier, "\t\t\t[");
+                for (int k = 0; k < automate->nombreEtats; k++) {
+                    fprintf(fichier, "%d", automate->matriceTransition[i][j][k]);
+                    if (k < automate->nombreEtats - 1) {
+                        fprintf(fichier, ",");
+                    }
+                }
+                fprintf(fichier, "]");
+                if (j < automate->nombreEvent - 1) {
+                    fprintf(fichier, ",");
+                }
+                fprintf(fichier, "\n");
+            }
+            fprintf(fichier, "\t\t]");
+            if (i < automate->nombreEtats - 1) {
+                fprintf(fichier, ",");
+            }
+            fprintf(fichier, "\n");
+        }
+        fprintf(fichier, "\t]\n");
+        fprintf(fichier, "}");
+        fclose(fichier);
+    }
+}
+
+// charger un automate a partir d'un fichier .json en demandant a l'utilisateur le nom du fichier et en verifiant si le fichier existe ou pas  
+Automate* chargerAutomate() {
+    char nomFichier[100];
+    printf("Quel est le nom du fichier ?\n");
+    scanf("%s", nomFichier);
+    FILE* fichier = fopen(nomFichier, "r");
+    if (fichier == NULL) {
+        printf("Erreur : le fichier n'existe pas\n");
+        return NULL;
+    } else {
+        int nombreEtats, nombreEvent;
+        fscanf(fichier, "{\n");
+        fscanf(fichier, "\t\"nombreEtats\" : %d,\n", &nombreEtats);
+        fscanf(fichier, "\t\"nombreEvent\" : %d,\n", &nombreEvent);
+        fscanf(fichier, "\t\"listeEvent\" : [\n");
+        char* listeEvent = calloc(nombreEvent, sizeof(char));
+        for (int i = 0; i < nombreEvent; i++) {
+            fscanf(fichier, "\t\t\"%c\"", &(listeEvent[i]));
+            if (i < nombreEvent - 1) {
+                fscanf(fichier, ",");
+            }
+            fscanf(fichier, "\n");
+        }
+        fscanf(fichier, "\t],\n");
+        fscanf(fichier, "\t\"etatsInitiaux\" : [\n");
+        int* etatsInitiaux = calloc(nombreEtats, sizeof(int));
+        for (int i = 0; i < nombreEtats; i++) {
+            fscanf(fichier, "\t\t%d", &(etatsInitiaux[i]));
+            if (i < nombreEtats - 1) {
+                fscanf(fichier, ",");
+            }
+            fscanf(fichier, "\n");
+        }
+        fscanf(fichier, "\t],\n");
+        fscanf(fichier, "\t\"etatsFinaux\" : [\n");
+        int* etatsFinaux = calloc(nombreEtats, sizeof(int));
+        for (int i = 0; i < nombreEtats; i++) {
+            fscanf(fichier, "\t\t%d", &(etatsFinaux[i]));
+            if (i < nombreEtats - 1) {
+                fscanf(fichier, ",");
+            }
+            fscanf(fichier, "\n");
+        }
+        fscanf(fichier, "\t],\n");
+        fscanf(fichier, "\t\"matriceTransition\" : [\n");
+        int*** matriceTransition = malloc(sizeof(int**) * nombreEtats);
+        for (int i = 0; i < nombreEtats; i++) {
+            matriceTransition[i] = malloc(sizeof(int*) * nombreEvent);
+            fscanf(fichier, "\t\t[\n");
+            for (int j = 0; j < nombreEvent; j++) {
+                matriceTransition[i][j] = calloc(nombreEtats, sizeof(int));
+                fscanf(fichier, "\t\t\t[");
+                for (int k = 0; k < nombreEtats; k++) {
+                    fscanf(fichier, "%d", &(matriceTransition[i][j][k]));
+                    if (k < nombreEtats - 1) {
+                        fscanf(fichier, ",");
+                    }
+                }
+                fscanf(fichier, "]");
+                if (j < nombreEvent - 1) {
+                    fscanf(fichier, ",");
+                }
+                fscanf(fichier, "\n");
+            }
+            fscanf(fichier, "\t\t]");
+            if (i < nombreEtats - 1) {
+                fscanf(fichier, ",");
+            }
+            fscanf(fichier, "\n");
+        }
+        fscanf(fichier, "\t]\n");
+        fscanf(fichier, "}");
+        fclose(fichier);
+    //l'automate a ete charge
+        Automate* automate = initAutomate(nombreEtats, nombreEvent);
+        automate->listeEvent = listeEvent;
+        automate->etatsInitiaux = etatsInitiaux;
+        automate->etatsFinaux = etatsFinaux;
+        automate->matriceTransition = matriceTransition;
+
+        //message de reussite
+        printf("L'automate a ete charge avec succes\n");
+
+        return automate;
+
+    }
+}
+// fonction qui va permettre de faire l'union de deux automates
+Automate* unionAutomate(Automate* automate1, Automate* automate2) {
+    // Creer un nouvel automate
+    Automate* automate = initAutomate(0, 0);
+
+    // Ajouter les etats de l'automate 1
+    for (int i = 0; i < automate1->nombreEtats; i++) {
+        ajouterEtat(automate, i);
+    }
+
+    // Ajouter les etats de l'automate 2
+    for (int i = 0; i < automate2->nombreEtats; i++) {
+        ajouterEtat(automate, i + automate1->nombreEtats);
+    }
+
+    // Ajouter les evenements de l'automate 1
+    for (int i = 0; i < automate1->nombreEvent; i++) {
+        ajouterEvent(automate, automate1->listeEvent[i]);
+    }
+
+    // Ajouter les evenements de l'automate 2
+    for (int i = 0; i < automate2->nombreEvent; i++) {
+        ajouterEvent(automate, automate2->listeEvent[i]);
+    }
+
+    // Ajouter les etats initiaux de l'automate 1
+    for (int i = 0; i < automate1->nombreEtats; i++) {
+        if (automate1->etatsInitiaux[i] == 1) {
+            ajouterEtatInitial(automate, i);
+        }
+    }
+
+    // Ajouter les etats initiaux de l'automate 2
+    for (int i = 0; i < automate2->nombreEtats; i++) {
+        if (automate2->etatsInitiaux[i] == 1) {
+            ajouterEtatInitial(automate, i + automate1->nombreEtats);
+        }
+    }
+
+    // Ajouter les etats finaux de l'automate 1
+    for (int i = 0; i < automate1->nombreEtats; i++) {
+        if (automate1->etatsFinaux[i] == 1) {
+            ajouterEtatFinal(automate, i);
+        }
+    }
+
+    // Ajouter les etats finaux de l'automate 2
+    for (int i = 0; i < automate2->nombreEtats; i++) {
+        if (automate2->etatsFinaux[i] == 1) {
+            ajouterEtatFinal(automate, i + automate1->nombreEtats);
+        }
+    }
+}
+
+// motvalide qui va permettre de tester si un mot est accepte par l'automate ou pas
+bool motValide(Automate* automate, char* mot) {
+    // Initialiser l'etat courant a l'etat initial
+    int etatCourant = 0;
+
+    // Parcourir chaque lettre du mot
+    for (int i = 0; i < strlen(mot); i++) {
+        // Trouver l'indice de l'evenement correspondant a la lettre
+        int indiceEvent = -1;
+        for (int j = 0; j < automate->nombreEvent; j++) {
+            if (automate->listeEvent[j] == mot[i]) {
+                indiceEvent = j;
+            }
+        }
+
+        // Si l'evenement n'existe pas, le mot n'est pas valide
+        if (indiceEvent == -1) {
+            return false;
+        }
+
+        // Trouver l'etat suivant
+        int etatSuivant = -1;
+        for (int j = 0; j < automate->nombreEtats; j++) {
+            if (automate->matriceTransition[etatCourant][indiceEvent][j] == 1) {
+                etatSuivant = j;
+            }
+        }
+
+        // Si l'etat suivant n'existe pas, le mot n'est pas valide
+        if (etatSuivant == -1) {
+            return false;
+        }
+
+        // Passer a l'etat suivant
+        etatCourant = etatSuivant;
+    }
+
+    // Si l'etat courant est final, le mot est valide
+    if (automate->etatsFinaux[etatCourant] == 1) {
+        return true;
+    } else {
+        return false;
+    }
+}
+// estDeterministe qui va permettre de savoir si l'automate est deterministe ou pas
+bool estDeterministe(Automate* automate) {
+    // Parcourir chaque etat
+    for (int i = 0; i < automate->nombreEtats; i++) {
+        // Parcourir chaque evenement
+        for (int j = 0; j < automate->nombreEvent; j++) {
+            // Compter le nombre d'etats lies par l'evenement
+            int nombreEtatsLies = 0;
+            for (int k = 0; k < automate->nombreEtats; k++) {
+                if (automate->matriceTransition[i][j][k] == 1) {
+                    nombreEtatsLies++;
+                }
+            }
+
+            // Si le nombre d'etats lies est different de 1, l'automate n'est pas deterministe
+            if (nombreEtatsLies != 1) {
+                return false;
+            }
+        }
+    }
+
+    // Si tous les etats ont passe le test, l'automate est deterministe
+    return true;
+}
+// estComplet qui va permettre de savoir si l'automate est complet ou pas
+bool estComplet(Automate* automate) {
+    // Parcourir chaque etat
+    for (int i = 0; i < automate->nombreEtats; i++) {
+        // Parcourir chaque evenement
+        for (int j = 0; j < automate->nombreEvent; j++) {
+            // Compter le nombre d'etats lies par l'evenement
+            int nombreEtatsLies = 0;
+            for (int k = 0; k < automate->nombreEtats; k++) {
+                if (automate->matriceTransition[i][j][k] == 1) {
+                    nombreEtatsLies++;
+                }
+            }
+
+            // Si le nombre d'etats lies est different de 1, l'automate n'est pas complet
+            if (nombreEtatsLies != 1) {
+                return false;
+            }
+        }
+    }
+
+    // Si tous les etats ont passe le test, l'automate est complet
+    return true;
+}
+// rendreDeterministe qui va permettre de rendre l'automate deterministe en partant de l'automate chargé et en lui ajoutant un etat poubelle qui sera lie a tous les etats qui n'ont pas de transition pour un evenement
+Automate* rendreDeterministe(Automate* automate) {
+    // Si l'automate est deterministe, on ne fait rien
+    if (estDeterministe(automate)) {
+        return automate;
+    }
+
+    // partir de automate comme base pour l'automate deterministe
+    Automate* automateDeterministe = automate;
+
+    ajouterEtat(automateDeterministe, 'p');
+    
+
+// menu qui va permettre a l'utilisateur de choisir ce qu'il veut faire
+void menu() {
+    int choix;
+    Automate* automate = NULL;
+    do {
+        printf("Que voulez-vous faire ?\n");
+        printf("1. Creer un automate\n");
+        printf("2. Modifier un automate\n");
+        printf("3. Afficher un automate\n");
+        printf("4. Enregistrer un automate\n");
+        printf("5. Charger un automate\n");
+        printf("6. Tester un mot\n");
+        printf("7. Quitter\n");
+        scanf("%d", &choix);
+        switch (choix) {
+            case 1:
+                if (automate != NULL) {
+                    freeAutomate(automate);
+                }
+                int nombreEtats, nombreEvent;
+                printf("Combien d'etats ?\n");
+                scanf("%d", &nombreEtats);
+                printf("Combien d'evenements ?\n");
+                scanf("%d", &nombreEvent);
+                automate = initAutomate(nombreEtats, nombreEvent);
+                automate = remplirAEF(automate);
+                break;
+            case 2:
+                if (automate != NULL) {
+                    ModifierAutomate(automate);
+                } else {
+                    printf("Erreur : aucun automate cree\n");
+                }
+                break;
+            case 3:
+                if (automate != NULL) {
+                    afficherAEF(automate);
+                } else {
+                    printf("Erreur : aucun automate cree\n");
+                }
+                break;
+            case 4:
+                if (automate != NULL) {
+                    enregistrerAutomate(automate);
+                } else {
+                    printf("Erreur : aucun automate cree\n");
+                }
+                break;
+            case 5:
+                if (automate != NULL) {
+                    freeAutomate(automate);
+                }
+                automate = chargerAutomate();
+                break;
+            case 6:
+                if (automate != NULL) {
+                    char mot[100];
+                    printf("Quel est le mot a tester ?\n");
+                    scanf("%s", mot);
+                    if (motValide(automate, mot)) {
+                        printf("Le mot est valide\n");
+                    } else {
+                        printf("Le mot n'est pas valide\n");
+                    }
+                } else {
+                    printf("Erreur : aucun automate cree\n");
+                }
+                break;
+            case 7:
+                if (automate != NULL) {
+                    freeAutomate(automate);
+                }
+                break;
+            default:
+                printf("Erreur : choix invalide\n");
+                break;
+        }
+    } while (choix != 7);
+}
+
+
 int main() {
-    // Initialiser un automate avec 3 états et 2 événements
-    Automate* automate = initAutomate(3, 2);
-
-    // Remplir l'automate avec des données d'exemple
-    automate->etatsInitiaux[0] = 1;
-    automate->etatsFinaux[2] = 1;
-    automate->listeEvent[0] = 'a';
-    automate->listeEvent[1] = 'b';
-    automate->matriceTransition[0][0][1] = 1; // état 1 --a--> état 2
-    automate->matriceTransition[1][1][2] = 1; // état 2 --b--> état 3
-
-    // Générer la description dot de l'automate
-    generateDot(automate);
-    system("dot -Tpng -o automate.png automate.dot && eog automate.png");
-    // Libérer la mémoire allouée pour l'automate
-    freeAutomate(automate);
-
+    menu();
     return 0;
 }

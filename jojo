@@ -1,0 +1,26 @@
+{
+	"nombreEtats" : 2,
+	"nombreEvent" : 2,
+	"listeEvent" : [
+		"1",
+		"b"
+	],
+	"etatsInitiaux" : [
+		1,
+		0
+	],
+	"etatsFinaux" : [
+		1,
+		0
+	],
+	"matriceTransition" : [
+		[
+			[1,2],
+			[0,1]
+		],
+		[
+			[1,0],
+			[0,1]
+		]
+	]
+}
