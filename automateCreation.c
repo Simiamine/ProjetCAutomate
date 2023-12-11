@@ -167,7 +167,7 @@ void remplirEvenement(Automate* automate){
 }
 
 
-Automate* remplirAEF(Automate* automate) {
+void remplirAEF(Automate* automate) {
     // Parcourir chaque état
     int pb;
     remplirEvenement( automate);
@@ -240,7 +240,7 @@ Automate* remplirAEF(Automate* automate) {
             }
         }
     }
-    return automate;
+    
 
     
 }

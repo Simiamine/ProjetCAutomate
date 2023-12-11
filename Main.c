@@ -30,6 +30,7 @@ int main(){
     
     printf("Bienvenue !\n");
     int choix=0;
+    Automate* automate = NULL;
     
     do{
         afficheMenu();
@@ -42,7 +43,7 @@ int main(){
             
             case 1:
                 
-                saisirAutomate();
+                automate = saisirAutomate();
                 break;
             
             case 2:

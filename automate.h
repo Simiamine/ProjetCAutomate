@@ -14,23 +14,23 @@
         } Automate;
 
         // Automaton creation
-        Automate* initAutomate(int , int);
-        Automate* remplirAEF(Automate* );
-        Automate* saisirAutomate();
-        int verifieEntree(int , int, int );
-        void remplirEvenement(Automate* );
-        int rechercheEvenement(char , int , char* );
-        void afficherAEF(Automate* );
-        void freeAutomate(Automate* );
+        Automate* initAutomate(int , int); // initialise l'automate
+        void remplirAEF(Automate* ); // remplie l'automate :  etat initiaux, finaux et matrice
+        Automate* saisirAutomate(); // recupere les informations de base et execute les fonctions de creation d'automate
+        int verifieEntree(int , int, int ); // utiliser pour controler les entrees de nombres positif
+        void remplirEvenement(Automate* ); // remplie les evenements
+        int rechercheEvenement(char , int , char* ); // recherche un evenement parmi ceux deja cree
+        void afficherAEF(Automate* ); // sur le terminal 
+        void freeAutomate(Automate* ); // supprime l'automate en cours d'utilisation
 
         //Modification d'automate
-        void ajouterEtat(Automate* , char );
-        void ajouterEvent(Automate* , char );
-        int trouverindiceEvent(Automate* , char );
-        void modifierTransition(Automate* , int , int , char );
+        void ajouterEtat(Automate* , char ); // PB AVK REALLOC pas besoin de caractere et initialise seulement remplie rien
+        void ajouterEvent(Automate* , char ); // PB AVK REALLOC idem initialise mais remplie pas 
+        int trouverindiceEvent(Automate* , char ); // retourne indice de l'evenement ou -1 sinon  OK 
+        void modifierTransition(Automate* , int , int , char ); // modifie cellule OK 
         void transition(Automate* , int , int , char ); // utilise nulle part 
-        void ajouterEtatInitial(Automate* , int );
-        void ajouterEtatFinal(Automate* , int );
+        void ajouterEtatInitial(Automate* , int ); // rajoute un etat initiale OK
+        void ajouterEtatFinal(Automate* , int ); // rajoute un etat final OK
         void ModifierAutomate(Automate* );
 
 
