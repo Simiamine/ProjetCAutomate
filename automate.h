@@ -16,6 +16,9 @@
         Automate* initAutomate(int , int);
         void remplirAEF(Automate* );
         Automate* saisirAutomate();
+        int verifieEntree(int , int, int );
+        void remplirEvenement(Automate* );
+        
 
 
 

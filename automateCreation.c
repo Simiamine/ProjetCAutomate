@@ -15,28 +15,31 @@
 Automate* saisirAutomate(){
     printf("\nNous allons proceder a la creation d'un automate.");
     
-    unsigned int nbEtat;
+    
     int verif;
+    int reste;
+    int nbEtat;
     do {
-        // Vider le tampon d'entrée
-        int c;
-        while ((c = getchar()) != '\n' && c != EOF);
+        
+        
 
         printf("\nNombre d'etat : ");
-        verif = scanf("%u", &nbEtat);
+        verif = scanf("%d", &nbEtat);
+        reste = getchar();
 
-        // Vérifier si c'est un entier positif
-        if (verif != 1 || nbEtat <= 0) {
-            printf("\nErreur : Veuillez rentrer un nombre entier positif.\n");
-        }
-    } while (verif != 1 || nbEtat <= 0);
+    } while (verifieEntree(verif, nbEtat, reste));
+    
 
-    printf("===%d", nbEtat);
+    
     
     
     int nbEvenement;
-    printf("\nNombre d'evenement : ");
-    scanf("%d", &nbEvenement);
+    do {
+        
+        printf("\nNombre d'evenement : ");
+        verif=scanf("%d", &nbEvenement);
+        reste = getchar();
+    } while (verifieEntree(verif, nbEvenement, reste));
     
     Automate* newAutomate = initAutomate(nbEtat, nbEvenement);
     
@@ -63,20 +66,42 @@ Automate* initAutomate(int nombreEtats, int nombreEvent) {
 
         // Allouer et initialiser la matrice de transition
         automate->matriceTransition = malloc(sizeof(int**) * nombreEtats);
-        for (int i = 0; i < nombreEtats; i++) {
+        if(automate->matriceTransition){
+            for (int i = 0; i < nombreEtats; i++) {
             automate->matriceTransition[i] = malloc(sizeof(int*) * nombreEvent);
-            for (int j = 0; j < nombreEvent; j++) {
-                automate->matriceTransition[i][j] = calloc(nombreEtats, sizeof(int));
+            if(automate->matriceTransition[i]){
+                for (int j = 0; j < nombreEvent; j++) {
+                    automate->matriceTransition[i][j] = calloc(nombreEtats, sizeof(int));
+                    if(!automate->matriceTransition[i][j]){
+                        allocPB=1;
+                    }
+                }
+            }else{
+                allocPB=1;
             }
+                
+            }
+        }else{
+            allocPB=1;
         }
+        
+        
 
         // Allouer et initialiser les états finaux et initiaux
         automate->etatsFinaux = calloc(nombreEtats, sizeof(int));
+        if(!automate->etatsFinaux){
+            allocPB=1;
+        }
         automate->etatsInitiaux = calloc(nombreEtats, sizeof(int));
+        if(!automate->etatsInitiaux){
+            allocPB=1;
+        }
 
         // Allouer et initialiser la liste des événements
         automate->listeEvent = calloc(nombreEvent, sizeof(char));
-
+        if(!automate->listeEvent){
+            allocPB=1;
+        }
 
     }else{
         allocPB=1; // informe au main des problemes d'allocation
@@ -86,19 +111,90 @@ Automate* initAutomate(int nombreEtats, int nombreEvent) {
     return automate;
 }
 
+int rechercheEvenement(char c, int indiceCourant, char* liste) {
+    
+    for (int i = 0; i < indiceCourant; i++) {
+        if (liste[i] == c) {
+            return 1; 
+        }
+    }
+    return 0; 
+}
+
+void remplirEvenement(Automate* automate){
+    int verif;
+    int pb;
+    int reste;
+    printf("\nInitialisation des evenements");
+    for (int i = 0; i < automate->nombreEvent; i++){
+        do{
+            pb=0;
+            printf("\nCaractere de l'evenement %d : ", i+1);
+            verif= scanf("%c", &(automate->listeEvent[i]));
+            automate->listeEvent[i]=tolower(automate->listeEvent[i]);
+            reste=getchar();
+            if (verif != 1 || isdigit(automate->listeEvent[i])||(reste!='\n')||rechercheEvenement(automate->listeEvent[i], i, automate->listeEvent)) {
+                pb=1;
+                printf("Erreur : Veuillez entrer un unique caractere different des precedents.\n");
+                if(reste!='\n'){
+                    int c;
+                    while ((c = getchar()) != '\n' && c != EOF);
+                }
+                
+        
+            }
+        }while(pb);
+        
+    }
+}
 
 void remplirAEF(Automate* automate) {
     // Parcourir chaque état
+    int pb;
+    remplirEvenement( automate);
+
+
+
+
     for (int i = 0; i < automate->nombreEtats; i++) {
         printf("Etat %d\n", i+1);
 
         // Demander si l'état est initial
-        printf("Etat initial ? (1 pour oui, 0 pour non) : ");
-        scanf("%d", &(automate->etatsInitiaux[i]));
+        do{
+            pb=0;
+            printf("Etat initial ? (1 pour oui, 0 pour non) : ");
+            if(scanf("%d", &(automate->etatsInitiaux[i]))!=1){
+                printf("\nErreur, veuillez rentrer 1 ou 0.\n");
+                pb=1;
+            }
+            int c;
+            while ((c = getchar()) != '\n' && c != EOF);
+            if((automate->etatsInitiaux[i]!=1) & (automate->etatsInitiaux[i]!=0)){
+                printf("\nErreur :veuillez rentrer soit 1 ou 0.\n");
+                pb=1;
+            }
 
+        }while(pb);
+        
         // Demander si l'état est final
-        printf("Etat final ? (1 pour oui, 0 pour non) : ");
-        scanf("%d", &(automate->etatsFinaux[i]));
+        do{
+            pb=0;
+            printf("Etat final ? (1 pour oui, 0 pour non) : ");
+            if(scanf("%d", &(automate->etatsFinaux[i]))!=1){
+                printf("\nErreur, veuillez rentrer 1 ou 0.\n");
+                pb=1;
+            }
+            int c;
+            while ((c = getchar()) != '\n' && c != EOF);
+            if((automate->etatsFinaux[i]!=1) & (automate->etatsFinaux[i]!=0)){
+                printf("\nErreur :veuillez rentrer soit 1 ou 0.\n");
+                pb=1;
+            }
+
+        }while(pb);
+
+
+        
 
         // Parcourir chaque événement
         for (int j = 0; j < automate->nombreEvent; j++) {
@@ -107,7 +203,7 @@ void remplirAEF(Automate* automate) {
 
             // Lire la liste des états liés à l'état i par l'événement j
             for (int k = 0; k < automate->nombreEtats; k++) {
-                printf("Etat %d est-il lié ? (1 pour oui, 0 pour non) : ", k+1);
+                printf("Etat %d est-il lie ? (1 pour oui, 0 pour non) : ", k+1);
                 scanf("%d", &(automate->matriceTransition[i][j][k]));
             }
         }
@@ -115,3 +211,26 @@ void remplirAEF(Automate* automate) {
 
     
 }
+
+
+
+
+int verifieEntree(int valeurScanf, int valeur, int reste){
+    
+    // Vérifier si c'est un entier positif
+    if ((valeurScanf != 1) || (valeur <= 0)||(reste != '\n')) {
+        
+        
+        printf("\nErreur : Veuillez rentrer un nombre entier positif.\n");
+        if(reste!='\n'){
+            int c;
+            while ((c = getchar()) != '\n' && c != EOF);
+
+        }
+        return 1;
+        
+    }
+    return 0;
+
+}
+
