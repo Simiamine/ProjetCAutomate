@@ -20,6 +20,43 @@
         int verifieEntree(int , int, int );
         void remplirEvenement(Automate* );
         int rechercheEvenement(char , int , char* );
+        void afficherAEF(Automate* );
+        void freeAutomate(Automate* );
+
+        //Modification d'automate
+        void ajouterEtat(Automate* , char );
+        void ajouterEvent(Automate* , char );
+        int trouverindiceEvent(Automate* , char );
+        void modifierTransition(Automate* , int , int , char );
+        void transition(Automate* , int , int , char ); // utilise nulle part 
+        void ajouterEtatInitial(Automate* , int );
+        void ajouterEtatFinal(Automate* , int );
+        void ModifierAutomate(Automate* );
+
+
+        //Manipulation de fichier json
+        void enregistrerAutomate(Automate* );
+        Automate* chargerAutomate();
+
+
+        // operation 
+        Automate* unionAutomate(Automate* , Automate* );//jcp ce que c'est ni ou le mettre
+
+        // Mot, complet, deterministe
+        bool motValide(Automate* automate, char* mot);
+        bool estDeterministe(Automate* automate);
+        bool estComplet(Automate* automate);
+        Automate* rendreDeterministe(Automate* automate);
+        void operationsAutomate();
+
+        // main et menu reste a voir ensemble
+        void menu();
+        int main();
+
+
+
+
+
         
 
 
@@ -27,20 +64,7 @@
 
 /*
 
-        // Automaton creation
-		void inputAutomaton(Automaton* );
-        Automaton* createAutomaton();
-        void initiateAutomaton(Automaton* );
-        void navigateAutomaton(Automaton*);
-        listOfState* enterCellsMatrix(int  , listOfEvents* , int ); 
-        void interpreteMatrix(Automaton);
-        void initiateInitialStates(Automaton*);
-        void initiateEvents(Automaton* );
-        void initiateFinalState(Automaton *);
-        void createIntitialState(Automaton* , int  );
-        void createFinalState(Automaton* , int );
-        void createNewEvent(Automaton* , int );
-        void createMatrix(Automaton*  );
+        
 
         //Automaton in files
         void serialization(Automaton);

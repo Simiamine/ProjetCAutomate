@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "automate.h"
-//#include "automateCreation.h"
+
 int allocPB = 0;
 
 
@@ -36,7 +36,7 @@ int main(){
 
 
         printf("Choix : ");
-        scanf("%d", &choix);
+        scanf("%d", &choix); // a gerer
         
         switch(choix){
             

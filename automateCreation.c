@@ -5,7 +5,24 @@
 #include "automate.h"
 
 
+int verifieEntree(int valeurScanf, int valeur, int reste){
+    
+    // Vérifier si c'est un entier positif
+    if ((valeurScanf != 1) || (valeur <= 0)||(reste != '\n')) {
+        
+        
+        printf("\nErreur : Veuillez rentrer un nombre entier positif.\n");
+        if(reste!='\n'){
+            int c;
+            while ((c = getchar()) != '\n' && c != EOF);
 
+        }
+        return 1;
+        
+    }
+    return 0;
+
+}
 
 /**
  * Function to gather all the basic information to create the automaton
@@ -231,22 +248,67 @@ Automate* remplirAEF(Automate* automate) {
 
 
 
-int verifieEntree(int valeurScanf, int valeur, int reste){
-    
-    // Vérifier si c'est un entier positif
-    if ((valeurScanf != 1) || (valeur <= 0)||(reste != '\n')) {
-        
-        
-        printf("\nErreur : Veuillez rentrer un nombre entier positif.\n");
-        if(reste!='\n'){
-            int c;
-            while ((c = getchar()) != '\n' && c != EOF);
-
-        }
-        return 1;
-        
+void afficherAEF(Automate* automate) {
+    // Afficher la liste des evenements
+    printf("Liste des evenements :\n");
+    for (int j = 0; j < automate->nombreEvent; j++) {
+        printf("Event %d : %c\n", j+1, automate->listeEvent[j]);
     }
-    return 0;
 
+    // Afficher les etats initiaux
+    printf("Liste des etats initiaux :\n");
+    for (int i = 0; i < automate->nombreEtats; i++) {
+        if (automate->etatsInitiaux[i] == 1) {
+            printf("Etat %d\n", i+1);
+        }
+    }
+
+    // Afficher les etats finaux
+    printf("Liste des etats finaux :\n");
+    for (int i = 0; i < automate->nombreEtats; i++) {
+        if (automate->etatsFinaux[i] == 1) {
+            printf("Etat %d\n", i+1);
+        }
+    }
+
+    // Afficher la matrice de transition
+    printf("Matrice de transition :\n");
+    for (int i = 0; i < automate->nombreEtats; i++) {
+        for (int j = 0; j < automate->nombreEvent; j++) {
+            printf("Etat %d --(%c)--> ", i+1, automate->listeEvent[j]);
+            for (int k = 0; k < automate->nombreEtats; k++) {
+                if (automate->matriceTransition[i][j][k] == 1) {
+                    printf("%d ", k+1);
+                }
+            }
+            printf("\n");
+        }
+    }
 }
+
+
+
+void freeAutomate(Automate* automate) {
+    // Liberer la memoire allouee pour la matrice de transition
+    for (int i = 0; i < automate->nombreEtats; i++) {
+        for (int j = 0; j < automate->nombreEvent; j++) {
+            free(automate->matriceTransition[i][j]);
+        }
+        free(automate->matriceTransition[i]);
+    }
+    free(automate->matriceTransition);
+
+    // Liberer la memoire allouee pour les etats finaux et initiaux
+    free(automate->etatsFinaux);
+    free(automate->etatsInitiaux);
+
+    // Liberer la memoire allouee pour la liste des evenements
+    free(automate->listeEvent);
+
+    // Liberer la memoire allouee pour l'automate
+    free(automate);
+}
+
+
+
 

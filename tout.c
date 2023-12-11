@@ -222,6 +222,7 @@ void modifierTransition(Automate* automate, int etatDepart, int etatArrivee, cha
 
 
 // fonction transition qui va dire si la transition existe ou pas
+
 void transition(Automate* automate, int etatDepart, int etatArrivee, char event) {
     // Trouver l'indice de l'evenement correspondant a la lettre
     int indiceEvent = trouverindiceEvent(automate, event); 
