@@ -18,6 +18,7 @@
         Automate* saisirAutomate();
         int verifieEntree(int , int, int );
         void remplirEvenement(Automate* );
+        int rechercheEvenement(char , int , char* );
         
 
 
