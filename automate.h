@@ -1,61 +1,89 @@
-#include <stdio.h>
-#ifndef AUTOMATE_H_
-		#ifndef AUTOMATE
-	#define AUTOMATE_H_
-			#define WHERE_AUTOMATE extern
-		#else
-		#endif
-			#define WHERE_AUTOMATE
+#ifndef AUTOMATE_H
+    #define AUTOMATE_H
 
-		typedef struct {
-            int numberOfStates;       // Number of states in the automaton
-            int numberOfEvents;       // Number of events in the automaton
-            listOfState** Matrix;  // Dynamic matrix line=states and colomn=events
-            int* finalStates;         // list of final states PK NE PAS METTRE LISTOFSTATE ICI PUISQUE QUE LE TAILLE DE CETTE LISTE PEUT VARIER
-            int* initialStates;  // list of initial states MEME REMARQUE ICI
-            listOfEvents* events; // list of events
-            
-        } Automaton;
+		extern int allocPB;
 
-        typedef struct { 
-            int state;
-            listOfState* next;
-        } listOfState; // linked list of states
-
+        // Structure representant un automate
         typedef struct {
-            char event;
-            listOfEvents* next;
-        } listOfEvents; // linked list of events
-
+            int nombreEtats;           // Nombre d'états dans l'automate
+            int nombreEvent;      // Nombre d'événements dans l'automate
+            int*** matriceTransition;  // Matrice dynamique contenant les transitions : matriceTransition[etat][event][etatsliés] avec etat liés = 1 si lié et 0 sinon
+            int* etatsFinaux;          // Tableau d'entiers de taille nbEtats : 1 si final et 0 sinon
+            int* etatsInitiaux;           //  Tableau d'entiers de taille nbEtats : 1 si initial et 0 sinon
+            char* listeEvent; // Liste des événements : listeEvent[event] = lettre de l'événement à l'indice event
+        } Automate;
 
         // Automaton creation
-		WHERE_AUTOMATE void inputAutomaton();
-        WHERE_AUTOMATE void createAutomaton();
-        WHERE_AUTOMATE Automaton initiateAutomaton(int, int);
-        WHERE_AUTOMATE void navigateAutomaton(Automaton);
-        WHERE_AUTOMATE listOfState enterCellsMatrix(int, int); 
-        WHERE_AUTOMATE void interpreteMatrix(Automaton);
+        Automate* initAutomate(int , int); // initialise l'automate
+        void remplirAEF(Automate* ); // remplie l'automate :  etat initiaux, finaux et matrice
+        Automate* saisirAutomate(); // recupere les informations de base et execute les fonctions de creation d'automate
+        int verifieEntree(int , int, int ); // utiliser pour controler les entrees de nombres positif
+        void remplirEvenement(Automate* ); // remplie les evenements
+        int rechercheEvenement(char , int , char* ); // recherche un evenement parmi ceux deja cree
+        void afficherAEF(Automate* ); // sur le terminal 
+        void freeAutomate(Automate* ); // supprime l'automate en cours d'utilisation
+
+        //Modification d'automate
+        void ajouterEtat(Automate* , char ); // PB AVK REALLOC pas besoin de caractere et initialise seulement remplie rien LYLIANNE
+        void ajouterEvent(Automate* , char ); // PB AVK REALLOC idem initialise mais remplie pas 
+        int trouverindiceEvent(Automate* , char ); // retourne indice de l'evenement ou -1 sinon  OK 
+        void modifierTransition(Automate* , int , int , char ); // modifie cellule OK 
+        
+        void ajouterEtatInitial(Automate* , int ); // verifier que l'etat existe lylianne
+        void ajouterEtatFinal(Automate* , int ); // verifier que l'etat existe LYLIANNE
+        void ModifierAutomate(Automate* ); // tous les scanf a gerer + voir directement les commentaires
+
+
+        //Manipulation de fichier json
+        void enregistrerAutomate(Automate* ); // controle a faire sinon OK
+        Automate* chargerAutomate();// controle a faire sinon OK
+
+
+        // operation 
+        Automate* unionAutomate(Automate* , Automate* );//jcp ce que c'est ni ou le mettre
+
+        // Mot, complet, deterministe
+        int motValide(Automate* automate, char* mot); // verif deter + pb etat intial 
+        int estDeterministe(Automate* automate); // OK
+        int estComplet(Automate* automate); // ok
+        Automate* rendreDeterministe(Automate* automate); // a refaire 
+        void operationsAutomate(); // manque rendre complet + voir commentaire
+
+        // main et menu reste a voir ensemble
+        void menu();
+        int main();
+
+
+
+
+
+        
+
+
+
+
+/*
+
+        
 
         //Automaton in files
-        WHERE_AUTOMATE void serialization(Automaton*, FILE*);
-        WHERE_AUTOMATE void deserialization(Automaton);
+        void serialization(Automaton);
+        void deserialization(Automaton);
 
         //Modification in Automaton
-        WHERE_AUTOMATE void changeFinalStates(Automaton);
-        WHERE_AUTOMATE void changeInitialStates(Automaton);
-        WHERE_AUTOMATE void changeCells(Automaton);
+        void changeFinalStates(Automaton);
+        void changeInitialStates(Automaton);
+        void changeCells(Automaton);
 
-        //Creation in Automaton
-        WHERE_AUTOMATE void createState(Automaton);
-        WHERE_AUTOMATE void createEvent(Automaton);
+        
 
         //Suppression in Automaton
-        WHERE_AUTOMATE void deleteAutomaton(Automaton);
-        WHERE_AUTOMATE void deleteState(Automaton);
-        WHERE_AUTOMATE void deleteEvent(Automaton);
+        void deleteAutomaton(Automaton);
+        void deleteStateInAutomaton(Automaton);
+        void deleteEventInAutomaton(Automaton);
 
 
-
+*/
         
 
 
