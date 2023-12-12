@@ -6,9 +6,9 @@
 
 
 // motvalide qui va permettre de tester si un mot est accepte par l'automate ou pas
-bool motValide(Automate* automate, char* mot) {
-    // Initialiser l'etat courant a l'etat initial
-    int etatCourant = 0;
+int motValide(Automate* automate, char* mot) {
+    // A RENDRE DETERMINISTE AVANT SI CE N EST PAS LE CAS 
+    int etatCourant = 0; // l'etat initial n'est pas forcement etat 0
 
     // Parcourir chaque lettre du mot
     for (int i = 0; i < strlen(mot); i++) {
@@ -22,7 +22,7 @@ bool motValide(Automate* automate, char* mot) {
 
         // Si l'evenement n'existe pas, le mot n'est pas valide
         if (indiceEvent == -1) {
-            return false;
+            return 0;
         }
 
         // Trouver l'etat suivant
@@ -35,7 +35,7 @@ bool motValide(Automate* automate, char* mot) {
 
         // Si l'etat suivant n'existe pas, le mot n'est pas valide
         if (etatSuivant == -1) {
-            return false;
+            return 0;
         }
 
         // Passer a l'etat suivant
@@ -44,9 +44,9 @@ bool motValide(Automate* automate, char* mot) {
 
     // Si l'etat courant est final, le mot est valide
     if (automate->etatsFinaux[etatCourant] == 1) {
-        return true;
+        return 1;
     } else {
-        return false;
+        return 0;
     }
 }
 
@@ -54,7 +54,7 @@ bool motValide(Automate* automate, char* mot) {
 
 
 // estDeterministe qui va permettre de savoir si l'automate est deterministe ou pas
-bool estDeterministe(Automate* automate) {
+int estDeterministe(Automate* automate) {
     // Parcourir chaque etat
     for (int i = 0; i < automate->nombreEtats; i++) {
         // Parcourir chaque evenement
@@ -69,20 +69,20 @@ bool estDeterministe(Automate* automate) {
 
             // Si le nombre d'etats lies est different de 1, l'automate n'est pas deterministe
             if (nombreEtatsLies != 1) {
-                return false;
+                return 0;
             }
         }
     }
 
     // Si tous les etats ont passe le test, l'automate est deterministe
-    return true;
+    return 1;
 }
 
 
 
 
 // estComplet qui va permettre de savoir si l'automate est complet ou pas
-bool estComplet(Automate* automate) {
+int estComplet(Automate* automate) {
     // Parcourir chaque etat
     for (int i = 0; i < automate->nombreEtats; i++) {
         // Parcourir chaque evenement
@@ -96,14 +96,14 @@ bool estComplet(Automate* automate) {
             }
 
             // Si le nombre d'etats lies est different de 1, l'automate n'est pas complet
-            if (nombreEtatsLies != 1) {
-                return false;
+            if (nombreEtatsLies == 0) {  // MODIFIE AVANT CT 1
+                return 0;
             }
         }
     }
 
     // Si tous les etats ont passe le test, l'automate est complet
-    return true;
+    return 1;
 }
 
 
@@ -138,7 +138,7 @@ void operationsAutomate() {
         scanf("%d", &choix);
         switch (choix) {
             case 1:
-                if (automate1 != NULL) {
+                if (automate1 != NULL) { // pk je peux creer une matrice faire les operations et laisse ou enregistrer apres 
                     freeAutomate(automate1);
                 }
                 automate1 = chargerAutomate();

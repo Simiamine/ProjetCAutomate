@@ -24,30 +24,30 @@
         void freeAutomate(Automate* ); // supprime l'automate en cours d'utilisation
 
         //Modification d'automate
-        void ajouterEtat(Automate* , char ); // PB AVK REALLOC pas besoin de caractere et initialise seulement remplie rien
+        void ajouterEtat(Automate* , char ); // PB AVK REALLOC pas besoin de caractere et initialise seulement remplie rien LYLIANNE
         void ajouterEvent(Automate* , char ); // PB AVK REALLOC idem initialise mais remplie pas 
         int trouverindiceEvent(Automate* , char ); // retourne indice de l'evenement ou -1 sinon  OK 
         void modifierTransition(Automate* , int , int , char ); // modifie cellule OK 
-        void transition(Automate* , int , int , char ); // utilise nulle part 
-        void ajouterEtatInitial(Automate* , int ); // rajoute un etat initiale OK
-        void ajouterEtatFinal(Automate* , int ); // rajoute un etat final OK
-        void ModifierAutomate(Automate* );
+        
+        void ajouterEtatInitial(Automate* , int ); // verifier que l'etat existe lylianne
+        void ajouterEtatFinal(Automate* , int ); // verifier que l'etat existe LYLIANNE
+        void ModifierAutomate(Automate* ); // tous les scanf a gerer + voir directement les commentaires
 
 
         //Manipulation de fichier json
-        void enregistrerAutomate(Automate* );
-        Automate* chargerAutomate();
+        void enregistrerAutomate(Automate* ); // controle a faire sinon OK
+        Automate* chargerAutomate();// controle a faire sinon OK
 
 
         // operation 
         Automate* unionAutomate(Automate* , Automate* );//jcp ce que c'est ni ou le mettre
 
         // Mot, complet, deterministe
-        bool motValide(Automate* automate, char* mot);
-        bool estDeterministe(Automate* automate);
-        bool estComplet(Automate* automate);
-        Automate* rendreDeterministe(Automate* automate);
-        void operationsAutomate();
+        int motValide(Automate* automate, char* mot); // verif deter + pb etat intial 
+        int estDeterministe(Automate* automate); // OK
+        int estComplet(Automate* automate); // ok
+        Automate* rendreDeterministe(Automate* automate); // a refaire 
+        void operationsAutomate(); // manque rendre complet + voir commentaire
 
         // main et menu reste a voir ensemble
         void menu();

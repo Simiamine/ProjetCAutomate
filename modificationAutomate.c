@@ -131,7 +131,7 @@ void ModifierAutomate(Automate* automate) {
     printf("8. Supprimer un etat initial\n");
     printf("9. Supprimer un etat final\n");
     printf("10. Quitter\n");
-    scanf("%d", &choix);
+    scanf("%d", &choix); 
     switch (choix) {
         case 1:
             printf("Quelle transition voulez-vous modifier ?\n");
@@ -145,13 +145,13 @@ void ModifierAutomate(Automate* automate) {
             scanf(" %c", &event1);
             printf("Valeur actuelle : %d\n", automate->matriceTransition[etatDepart][event1][etatArrivee]);
             printf("Voulez vous l'inverser ? (1 pour oui, 0 pour non) : ");
-            int choixInversion;
+            int choixInversion; // pas utiliser
             scanf("%d", &choixInversion);
             modifierTransition(automate, etatDepart, etatArrivee, event1);
             break;
         case 2:
             printf("Quel est l'identifiant de l'etat a ajouter ?\n");
-            char identifiant;
+            char identifiant; // pas besoin
             scanf(" %c", &identifiant);
             ajouterEtat(automate, identifiant);
             break;
@@ -162,18 +162,18 @@ void ModifierAutomate(Automate* automate) {
             ajouterEvent(automate, event2);
             break;
         case 4:
-            printf("Quel est l'etat initial a ajouter ?\n");
+            printf("Quel est l'etat initial a ajouter ?\n"); // aucun controle fait 
             int etatInitial;
             scanf("%d", &etatInitial);
             ajouterEtatInitial(automate, etatInitial);
             break;
         case 5:
-            printf("Quel est l'etat final a ajouter ?\n");
+            printf("Quel est l'etat final a ajouter ?\n");  // aucun controle fait 
             int etatFinal;
             scanf("%d", &etatFinal);
             ajouterEtatFinal(automate, etatFinal);
             break;
-        case 6: //supprimer un etat
+        case 6: // pas de suppression + manque nb etat, etat initial et final
             printf("Quel est l'etat a supprimer ?\n");
             int etat;
             scanf("%d", &etat);
@@ -188,7 +188,7 @@ void ModifierAutomate(Automate* automate) {
                 }
             }
             break;
-        case 7: //supprimer un evenement
+        case 7: //pas de suppression
             printf("Quel est l'evenement a supprimer ?\n");
             int eventSuppr;
             scanf("%d", &eventSuppr);
@@ -200,16 +200,16 @@ void ModifierAutomate(Automate* automate) {
             printf("Quel est l'etat initial a supprimer ?\n");
             int etatInitialSuppr;
             scanf("%d", &etatInitialSuppr);
-            automate->etatsInitiaux[etatInitialSuppr] = 0;
+            automate->etatsInitiaux[etatInitialSuppr] = 0; //pas supprimer
             break;
         case 9: //supprimer un etat final (on ne peut pas supprimer un etat final qui est aussi initial)
             printf("Quel est l'etat final a supprimer ?\n");
             int etatFinalSuppr;
             scanf("%d", &etatFinalSuppr);
-            automate->etatsFinaux[etatFinalSuppr] = 0;
+            automate->etatsFinaux[etatFinalSuppr] = 0; //pas supprimer
             break;
         case 10:
-            break;
+            break; // pas besoin
         default:
             printf("Erreur : choix invalide\n");
             break;
