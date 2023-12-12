@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <graphviz_version.h>
 
 
 // Structure representant un automate
@@ -250,6 +250,9 @@ void ajouterEtatFinal(Automate* automate, int etat) {
     // Ajouter l'etat a la liste des etats finaux
     automate->etatsFinaux[etat] = 1;
 }
+
+//fonction affichagegraphique qui va utiliser la librairie graphviz pour afficher l'automate
+
 //fonction ModifierAutomate qui va permettre de modifier l'automate (changer les transitions actuelles), ajouter ou supprimer un etat (en configurant ses transitions et son charactere d'identification), des evenements (en configurant pour chaque etat la où il va servir), des etats initiaux et finaux.
 void ModifierAutomate(Automate* automate) {
     int choix;
@@ -561,6 +564,117 @@ Automate* unionAutomate(Automate* automate1, Automate* automate2) {
             ajouterEtatFinal(automate, i + automate1->nombreEtats);
         }
     }
+}
+//Miroir d'un AEF : Le miroir d'un AEF est un nouvel AEF obtenu en inversant la direction des transitions de l'AEF d'origine. Autrement dit, si l'AEF d'origine avait une transition de l'état A vers l'état B avec un symbole donné, le miroir aura une transition de l'état B vers l'état A avec le même symbole. Les états finaux (resp. initiaux) sont initiaux (resp. finaux) dans le nouvel AEF.
+Automate* miroir(Automate* automate) {
+    // Creer un nouvel automate
+    Automate* automateMiroir = automate;
+    automateMiroir->etatsFinaux = automate->etatsInitiaux;
+    automateMiroir->etatsInitiaux = automate->etatsFinaux;
+    for (int i = 0; i < automate->nombreEtats; i++) {
+        for (int j = 0; j < automate->nombreEvent; j++) {
+            for (int k = 0; k < automate->nombreEtats; k++) {
+                if (automate->matriceTransition[i][j][k] == 1) {
+                    automateMiroir->matriceTransition[i][j][k] = 0;
+                } else {
+                    automateMiroir->matriceTransition[i][j][k] = 1;
+                }
+            }
+        }
+    }
+    return automateMiroir;
+}
+
+
+// Complément d'un AEF : Le complément d'un AEF est un nouvel AEF obtenu en inversant les états finaux et non finaux de l'AEF d'origine. Si un état était final dans l'AEF d'origine, il devient non final dans le complément, et vice versa. 
+Automate* complement(Automate* automate) {
+    // Creer un nouvel automate
+    Automate* automateComplement = automate;
+    for (int i = 0; i < automate->nombreEtats; i++) {
+        if (automate->etatsFinaux[i] == 1) {
+            automateComplement->etatsFinaux[i] = 0;
+        } else {
+            automateComplement->etatsFinaux[i] = 1;
+        }
+    }
+    return automateComplement;
+}
+
+// Produit de deux AEFs : Le produit de deux AEFs A et B, noté A * B, est un nouvel AEF dont les états sont toutes les combinaisons d'états possibles de A et B. Lesétats finaux du produit sont ceux pour lesquels les états correspondants de A et Bsont tous deux finaux. Les transitions sont définies de manière similaire, où lestransitions du produit relient les états en fonction des transitions des AEFsd'origine.
+Automate* produit(Automate* automate1, Automate* automate2) {
+    // Creer un nouvel automate
+    Automate* automateProduit = initAutomate(0, 0);
+
+    // Ajouter les etats de l'automate 1
+    for (int i = 0; i < automate1->nombreEtats; i++) {
+        ajouterEtat(automateProduit, i);
+    }
+
+    // Ajouter les etats de l'automate 2
+    for (int i = 0; i < automate2->nombreEtats; i++) {
+        ajouterEtat(automateProduit, i + automate1->nombreEtats);
+    }
+
+    // Ajouter les evenements de l'automate 1
+    for (int i = 0; i < automate1->nombreEvent; i++) {
+        ajouterEvent(automateProduit, automate1->listeEvent[i]);
+    }
+
+    // Ajouter les evenements de l'automate 2
+    for (int i = 0; i < automate2->nombreEvent; i++) {
+        ajouterEvent(automateProduit, automate2->listeEvent[i]);
+    }
+
+    // Ajouter les etats initiaux de l'automate 1
+    for (int i = 0; i < automate1->nombreEtats; i++) {
+        if (automate1->etatsInitiaux[i] == 1) {
+                ajouterEtatInitial(automateProduit, i);
+        }
+    }
+
+    // Ajouter les etats initiaux de l'automate 2
+    for (int i = 0; i < automate2->nombreEtats; i++) {
+        if (automate2->etatsInitiaux[i] == 1) {
+            ajouterEtatInitial(automateProduit, i + automate1->nombreEtats);
+        }
+    }
+
+    // Ajouter les etats finaux de l'automate 1
+    for (int i = 0; i < automate1->nombreEtats; i++) {
+        if (automate1->etatsFinaux[i] == 1) {
+            ajouterEtatFinal(automateProduit, i);
+        }
+    }
+
+    // Ajouter les etats finaux de l'automate 2
+    for (int i = 0; i < automate2->nombreEtats; i++) {
+        if (automate2->etatsFinaux[i] == 1) {
+            ajouterEtatFinal(automateProduit, i + automate1->nombreEtats);
+        }
+    }
+
+    // Ajouter les transitions
+    for (int i = 0; i < automate1->nombreEtats; i++) {
+        for (int j = 0; j < automate1->nombreEvent; j++) {
+            for (int k = 0; k < automate1->nombreEtats; k++) {
+                if (automate1->matriceTransition[i][j][k] == 1) {
+                    automateProduit->matriceTransition[i][j][k] = 1;
+                }
+            }
+        }
+    }
+
+    for (int i = 0; i < automate2->nombreEtats; i++) {
+        for (int j = 0; j < automate2->nombreEvent; j++) {
+            for (int k = 0; k < automate2->nombreEtats; k++) {
+                if (automate2->matriceTransition[i][j][k] == 1) {
+                    automateProduit->matriceTransition[i + automate1->nombreEtats][j + automate1->nombreEvent][k + automate1->nombreEtats] = 1;
+                }
+            }
+        }
+    }
+
+    return automateProduit;
 }
 
 // motvalide qui va permettre de tester si un mot est accepte par l'automate ou pas
