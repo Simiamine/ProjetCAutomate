@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include <graphviz_version.h>
+#include <gvc.h>
 
 
 // Structure representant un automate
@@ -252,6 +252,32 @@ void ajouterEtatFinal(Automate* automate, int etat) {
 }
 
 //fonction affichagegraphique qui va utiliser la librairie graphviz pour afficher l'automate
+void affichagegraphique(Automate* automate) {
+    FILE* fichier = fopen("automate.dot", "w");
+    fprintf(fichier, "digraph automate {\n");
+    fprintf(fichier, "\trankdir=LR;\n");
+    fprintf(fichier, "\tnode [shape = doublecircle];\n");
+    for (int i = 0; i < automate->nombreEtats; i++) {
+        if (automate->etatsFinaux[i] == 1) {
+            fprintf(fichier, "\t%d;\n", i);
+        }
+    }
+    fprintf(fichier, "\tnode [shape = circle];\n");
+    for (int i = 0; i < automate->nombreEtats; i++) {
+        for (int j = 0; j < automate->nombreEvent; j++) {
+            for (int k = 0; k < automate->nombreEtats; k++) {
+                if (automate->matriceTransition[i][j][k] == 1) {
+                    fprintf(fichier, "\t%d -> %d [ label = \"%c\" ];\n", i, k, automate->listeEvent[j]);
+                }
+            }
+        }
+    }
+    fprintf(fichier, "}");
+    fclose(fichier);
+    system("dot -Tpng automate.dot -o automate.png");
+    system("automate.png");
+}
+
 
 //fonction ModifierAutomate qui va permettre de modifier l'automate (changer les transitions actuelles), ajouter ou supprimer un etat (en configurant ses transitions et son charactere d'identification), des evenements (en configurant pour chaque etat la où il va servir), des etats initiaux et finaux.
 void ModifierAutomate(Automate* automate) {
@@ -873,6 +899,7 @@ void menu() {
             case 3:
                 if (automate != NULL) {
                     afficherAEF(automate);
+                    affichagegraphique(automate);
                 } else {
                     printf("Erreur : aucun automate cree\n");
                 }
