@@ -119,6 +119,7 @@ void afficheMenuMCD(){
     printf("\n3\tVerifier s'il est complet");
     printf("\n4\tRendre deterministe");
     printf("\n5\tRendre complet");
+    printf("\n0\tRevenir en arriere\n");
 }
 
 
