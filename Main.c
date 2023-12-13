@@ -27,7 +27,7 @@ void afficheMenuAjouter(){
     printf("\n0\tRevenir en arriere\n");
 }
 
-void ajout(){
+void ajout(Automate* automate){
     int choix2;
     do{                    
         choix2=100;
@@ -75,7 +75,7 @@ void afficheMenuSupprimer(){
 }
 
 
-void supprimer(){
+void supprimer(Automate* automate){
     int choix2;
     do{                    
         choix2=100;
@@ -121,6 +121,64 @@ void afficheMenuMCD(){
     printf("\n5\tRendre complet");
 }
 
+
+void mcd(Automate* automate){
+    int choix2;
+    do{                    
+        choix2=100;
+        afficheMenuMCD();
+        printf("\nChoix : ");
+        scanf("%d", &choix2);
+        switch(choix2){
+            case 1:
+                if (automate != NULL) {
+                    char mot[100];
+                    printf("Quel est le mot a tester ?\n");
+                    scanf("%s", mot);
+                    if (motValide(automate, mot)) {
+                        printf("Le mot est valide\n");
+                    } else {
+                        printf("Le mot n'est pas valide\n");
+                    }
+                } else {
+                    printf("Erreur : aucun automate cree\n");
+                }
+                break;
+            case 2:
+                if(estDeterministe(automate)){
+                    printf("\nL'automate est deterministe.");
+                }else{
+                    printf("\nL'automate n'est pas deterministe.");
+                }
+                break;
+            case 3:
+                if(estComplet(automate)){
+                    printf("\nL'automate est complet.");
+                }else{
+                    printf("\nL'automate n'est pas complet.");
+                }
+                break;
+            case 4:
+                printf("Fonction non fini");
+                break;
+            case 5:
+                printf("Fonction non fini");
+                break;
+            case 0 :
+                break;
+            default:
+                printf("\nChoix incorrect\n");
+                int c;
+                while ((c = getchar()) != '\n' && c != EOF);
+        }
+        
+
+
+    }while((choix2!=0)&(!allocPB));
+}
+
+
+
 void afficheMenuOper(){
     
     printf("\n1\tComplement");
@@ -161,10 +219,18 @@ int main(){
                     scanf("%d", &choix1); 
                     switch(choix1){
                         case 1:
-                            ajout();
+                            if (automate != NULL) {
+                                ajout(automate);
+                            }else{
+                                printf("Erreur aucun AEF est en cours d'utilisation");
+                            }
                             break;
                         case 2:
-                            supprimer();
+                            if (automate != NULL) {
+                                supprimer(automate);
+                            }else{
+                                printf("Erreur aucun AEF est en cours d'utilisation");
+                            }
                             break;
                         case 0 :
                             break;
@@ -193,7 +259,11 @@ int main(){
                 break;
 
             case 5:
-                printf("\n\tSupprimer un AEF\n");
+                if (automate != NULL) {
+                    mcd(automate);
+                }else{
+                    printf("Erreur aucun AEF est en cours d'utilisation");
+                }
                 break;
 
             case 6:

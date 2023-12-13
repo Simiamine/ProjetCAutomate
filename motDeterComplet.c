@@ -8,7 +8,23 @@
 // motvalide qui va permettre de tester si un mot est accepte par l'automate ou pas
 int motValide(Automate* automate, char* mot) {
     // A RENDRE DETERMINISTE AVANT SI CE N EST PAS LE CAS 
-    int etatCourant = 0; // l'etat initial n'est pas forcement etat 0
+    
+    /*
+    if(!estDeterministe){
+        automate = rendreDeterministe(automate);
+    }
+    */
+   
+    int trouve=0;
+    int i=0;
+    while(!trouve){
+        if(automate->etatsInitiaux[i]==1){
+            trouve=1;
+        }else{
+            i++;
+        }
+    }
+    int etatCourant = i; // l'etat initial n'est pas forcement etat 0
 
     // Parcourir chaque lettre du mot
     for (int i = 0; i < strlen(mot); i++) {

@@ -35,8 +35,8 @@
 
 
         //Manipulation de fichier json
-        void enregistrerAutomate(Automate* ); // controle a faire sinon OK
-        Automate* chargerAutomate();// controle a faire sinon OK
+        void enregistrerAutomate(Automate* ); 
+        Automate* chargerAutomate();
 
 
         // operation 
