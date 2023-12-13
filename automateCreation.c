@@ -7,7 +7,7 @@
 
 int verifieEntree(int valeurScanf, int valeur, int reste){
     
-    // Vérifier si c'est un entier positif
+    // Vérifier si c'est un entier positif different de 0
     if ((valeurScanf != 1) || (valeur <= 0)||(reste != '\n')) {
         
         
@@ -228,12 +228,15 @@ void remplirAEF(Automate* automate) {
                     if(scanf("%d", &(automate->matriceTransition[i][j][k]))!=1){
                         printf("\nErreur, veuillez rentrer 1 ou 0.\n");
                         pb=1;
+                        int c;
+                        while ((c = getchar()) != '\n' && c != EOF);
                     }
-                    int c;
-                    while ((c = getchar()) != '\n' && c != EOF);
+                    
                     if((automate->matriceTransition[i][j][k]!=1) & (automate->matriceTransition[i][j][k]!=0)){
                         printf("\nErreur :veuillez rentrer soit 1 ou 0.\n");
                         pb=1;
+                        int c;
+                        while ((c = getchar()) != '\n' && c != EOF);
                     }
 
                 }while(pb);

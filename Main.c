@@ -9,35 +9,139 @@ int allocPB = 0;
 void afficheMenu(){
     printf("\n\t Menu\n\n");
     printf("\n1\tSaisir un AEF");
-    printf("\n2\tImporter un AEF a partir d'un fichier");
-    printf("\n3\tModifier un AEF");
+    printf("\n2\tModifier ou supprimer un AEF"); 
+    printf("\n3\tImporter un AEF a partir d'un fichier");
     printf("\n4\tSauvegarder un AEF sur un fichier");
-    printf("\n5\tSupprimer un AEF");
-    printf("\n6\tReconnaitre un mot");
-    printf("\n7\tVerifier si un AEF est complet");
-    printf("\n8\tRendre un AEF complet");
-    printf("\n9\tVerifier si un AEF est deterministe");
-    printf("\n10\tRendre un AEF deterministe");
-    printf("\n11\tComplement d'un AEF");
-    printf("\n12\tMirroir d'un AEF");
-    printf("\n13\tProduit de deux AEF");
-    printf("\n14\tConcatenation de deux AEF");
+    printf("\n5\tMot, Complet et deterministe");
+    printf("\n6\tOperation sur un AEF");
     printf("\n0\tQuitter\n");
+}
+
+void afficheMenuAjouter(){
+    
+    printf("\n1\tAjouter un etat");
+    printf("\n2\tAjouter un etat initial");
+    printf("\n3\tAjouter un etat final");
+    printf("\n4\tAjouter une transition");
+    printf("\n5\tAjouter un evenement");
+    printf("\n0\tRevenir en arriere\n");
+}
+
+void ajout(){
+    int choix2;
+    do{                    
+        choix2=100;
+        afficheMenuAjouter();
+        printf("Choix : ");
+        scanf("%d", &choix2);
+        switch(choix2){
+            case 1:
+                printf("Fonction non fini");
+                break;
+            case 2:
+                printf("Fonction non fini");
+                break;
+            case 3:
+                printf("Fonction non fini");
+                break;
+            case 4:
+                printf("Fonction non fini");
+                break;
+            case 5:
+                printf("Fonction non fini");
+                break;
+            case 0 :
+                break;
+            default:
+                printf("\nChoix incorrect\n");
+                int c;
+                while ((c = getchar()) != '\n' && c != EOF);
+        }
+        
+
+
+    }while((choix2!=0)&(!allocPB));
+}
+
+
+void afficheMenuSupprimer(){
+    
+    printf("\n1\tSupprimer un etat");
+    printf("\n2\tSupprimer un etat initial");
+    printf("\n3\tSupprimer un etat final");
+    printf("\n4\tSupprimer une transition");
+    printf("\n5\tSupprimer un evenement");
+    printf("\n0\tRevenir en arriere\n");
+}
+
+
+void supprimer(){
+    int choix2;
+    do{                    
+        choix2=100;
+        afficheMenuSupprimer();
+        printf("Choix : ");
+        scanf("%d", &choix2);
+        switch(choix2){
+            case 1:
+                printf("Fonction non fini");
+                break;
+            case 2:
+                printf("Fonction non fini");
+                break;
+            case 3:
+                printf("Fonction non fini");
+                break;
+            case 4:
+                printf("Fonction non fini");
+                break;
+            case 5:
+                printf("Fonction non fini");
+                break;
+            case 0 :
+                break;
+            default:
+                printf("\nChoix incorrect\n");
+                int c;
+                while ((c = getchar()) != '\n' && c != EOF);
+        }
+        
+
+
+    }while((choix2!=0)&(!allocPB));
+
+}
+
+void afficheMenuMCD(){
+    
+    printf("\n1\tReconnaitre un mot");
+    printf("\n2\tVerifier s'il est deterministe "); 
+    printf("\n3\tVerifier s'il est complet");
+    printf("\n4\tRendre deterministe");
+    printf("\n5\tRendre complet");
+}
+
+void afficheMenuOper(){
+    
+    printf("\n1\tComplement");
+    printf("\n2\tMiroir"); 
+    printf("\n3\tConcatenation");
+    printf("\n4\tProduit");
 }
 
 
 int main(){
     
     printf("Bienvenue !\n");
-    int choix=0;
+    int choix;
     Automate* automate = NULL;
     
     do{
         afficheMenu();
-
+        choix=100;
 
         printf("Choix : ");
-        scanf("%d", &choix); // a gerer
+        scanf("%d", &choix); 
         
         switch(choix){
             
@@ -46,16 +150,46 @@ int main(){
                 automate = saisirAutomate();
                 break;
             
-            case 2:
-                printf("\n\tImporter un AEF à partir d'un fichier\n");
+            case 2: 
+                int choix1;
+                do{
+                    choix1=100;
+                    printf("\n\t1-Ajouter\n");
+                    printf("\n\t2-Supprimer\n");
+                    printf("\n\t0-Revenir en arriere\n");
+                    printf("Choix : ");
+                    scanf("%d", &choix1); 
+                    switch(choix1){
+                        case 1:
+                            ajout();
+                            break;
+                        case 2:
+                            supprimer();
+                            break;
+                        case 0 :
+                            break;
+                        default :
+                            printf("\nChoix incorrect\n");
+                            int c;
+                            while ((c = getchar()) != '\n' && c != EOF);
+                    }
+                
+                }while((choix1!=0)&(!allocPB));
                 break;
             
             case 3:
-                printf("\n\tModifier un AEF\n");
+                if (automate != NULL) {
+                    freeAutomate(automate);
+                }
+                automate = chargerAutomate();
                 break;
             
             case 4:
-                printf("\n\tSauvegarder un AEF sur un fichier\n");
+                if (automate != NULL) {
+                    enregistrerAutomate(automate);
+                } else {
+                    printf("Erreur : aucun automate cree\n");
+                }
                 break;
 
             case 5:
@@ -102,11 +236,15 @@ int main(){
                 break;
             
 
-                default:
-                    printf("\nChoix incorrect\n");
+            default:
+                printf("\nChoix incorrect\n");
             
 
         }
+        // vider le tampon d'entree
+        int c;
+        
+        while ((c = getchar()) != '\n' && c != EOF);
 
 
     }while((choix!=0)&(!allocPB));
