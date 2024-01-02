@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 #include "automate.h"
 
 int allocPB = 0;
@@ -136,6 +137,9 @@ void mcd(Automate* automate){
                     char mot[100];
                     printf("Quel est le mot a tester ?\n");
                     scanf("%s", mot);
+                    for (int i = 0; mot[i] != '\0'; i++) {
+                        mot[i] = tolower(mot[i]);
+                    }
                     if (motValide(automate, mot)) {
                         printf("Le mot est valide\n");
                     } else {
@@ -163,7 +167,7 @@ void mcd(Automate* automate){
                 printf("Fonction non fini");
                 break;
             case 5:
-                printf("Fonction non fini");
+                rendreComplet(automate);
                 break;
             case 0 :
                 break;
@@ -270,7 +274,7 @@ int main(){
             case 6:
                 printf("\n\tReconnaître un mot\n");
                 break;
-
+            // ANCIEN A SUPP 
             case 7:
                 printf("\n\tVérifier si un AEF est complet\n");
                 break;
@@ -302,6 +306,8 @@ int main(){
             case 14:
                 printf("\n\tConcaténation de deux AEF\n");
                 break;
+
+            // ANCIEN A SUPP
             case 0:
                 printf("\n\tAu revoir !\n");
                 break;

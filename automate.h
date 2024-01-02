@@ -21,7 +21,7 @@
         void remplirEvenement(Automate* ); // remplie les evenements
         int rechercheEvenement(char , int , char* ); // recherche un evenement parmi ceux deja cree
         void afficherAEF(Automate* ); // sur le terminal 
-        void freeAutomate(Automate* ); // supprime l'automate en cours d'utilisation
+        void freeAutomate(Automate* ); // supprime l'automate en cours d'utilisation FIOOO A FAIRE 
 
         //Modification d'automate
         void ajouterEtat(Automate* , char ); // PB AVK REALLOC pas besoin de caractere et initialise seulement remplie rien LYLIANNE
@@ -35,18 +35,19 @@
 
 
         //Manipulation de fichier json
-        void enregistrerAutomate(Automate* ); 
-        Automate* chargerAutomate();
+        void enregistrerAutomate(Automate* );  // ok
+        Automate* chargerAutomate(); // ok
 
 
         // operation 
         Automate* unionAutomate(Automate* , Automate* );//jcp ce que c'est ni ou le mettre
 
         // Mot, complet, deterministe
-        int motValide(Automate* automate, char* mot); // verif deter + pb etat intial 
+        int motValide(Automate* automate, char* mot); // OK attendre rendre deter
         int estDeterministe(Automate* automate); // OK
         int estComplet(Automate* automate); // ok
-        Automate* rendreDeterministe(Automate* automate); // a refaire 
+        Automate* rendreDeterministe(Automate* automate); // a refaire Lylianne
+        Automate* rendreComplet(Automate* automate); // OK
         void operationsAutomate(); // manque rendre complet + voir commentaire
 
         // main et menu reste a voir ensemble
