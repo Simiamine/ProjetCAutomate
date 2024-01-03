@@ -21,7 +21,7 @@
         void remplirEvenement(Automate* ); // remplie les evenements
         int rechercheEvenement(char , int , char* ); // recherche un evenement parmi ceux deja cree
         void afficherAEF(Automate* ); // sur le terminal 
-        void freeAutomate(Automate* ); // supprime l'automate en cours d'utilisation FIOOO A FAIRE 
+        void freeAutomate(Automate* ); // supprime l'automate en cours d'utilisation 
 
         //Modification d'automate
         void ajouterEtat(Automate* , char ); // PB AVK REALLOC pas besoin de caractere et initialise seulement remplie rien LYLIANNE
@@ -48,7 +48,7 @@
         int estComplet(Automate* automate); // ok
         Automate* rendreDeterministe(Automate* automate); // a refaire Lylianne
         Automate* rendreComplet(Automate* automate); // OK
-        void operationsAutomate(); // manque rendre complet + voir commentaire
+        void operationsAutomate(); // a supp
 
         // main et menu reste a voir ensemble
         void menu();
