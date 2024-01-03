@@ -31,7 +31,7 @@
         
         void ajouterEtatInitial(Automate* , int ); // verifier que l'etat existe lylianne
         void ajouterEtatFinal(Automate* , int ); // verifier que l'etat existe LYLIANNE
-        void ModifierAutomate(Automate* ); // tous les scanf a gerer + voir directement les commentaires
+        void ModifierAutomate(Automate* ); // a supp
 
 
         //Manipulation de fichier json
