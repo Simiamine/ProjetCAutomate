@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gvc.h>
+
 
 
 // Structure representant un automate
