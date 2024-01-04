@@ -380,6 +380,27 @@ void ajoutEvent(Automate* automaton) {
     for (int i = 0; i < automaton->nombreEtats; i++) {
         automaton->matriceTransition[i] = realloc(automaton->matriceTransition[i], automaton->nombreEvent * sizeof(int*));
         automaton->matriceTransition[i][automaton->nombreEvent - 1] = calloc(automaton->nombreEtats, sizeof(int));
+        printf("Etat %d --(%c)--> ?\n", i+1, automaton->listeEvent[automaton->nombreEvent - 1]);
+        for (int k = 0; k < automaton->nombreEtats; k++) {
+            do{
+                pb=0;
+                printf("Etat %d est-il lie ? (1 pour oui, 0 pour non) : ", k+1);
+                if(scanf("%d", &(automaton->matriceTransition[i][automaton->nombreEvent - 1][k]))!=1){
+                    printf("\nErreur, veuillez rentrer 1 ou 0.\n");
+                    pb=1;
+                    int c;
+                    while ((c = getchar()) != '\n' && c != EOF);
+                }
+                
+                if((automaton->matriceTransition[i][automaton->nombreEvent - 1][k]!=1) & (automaton->matriceTransition[i][automaton->nombreEvent - 1][k]!=0)){
+                    printf("\nErreur :veuillez rentrer soit 1 ou 0.\n");
+                    pb=1;
+                    int c;
+                    while ((c = getchar()) != '\n' && c != EOF);
+                }
+
+            }while(pb);
+        }
     }
 }
 
