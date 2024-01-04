@@ -28,6 +28,7 @@
         //Modification d'automate
         int* ajouterValeur(int* , int , int );
         void ajouterEtat(Automate * ); 
+        void suppEtat(Automate* );
         void ajouterEvent(Automate* , char ); // PB AVK REALLOC idem initialise mais remplie pas 
         int trouverindiceEvent(Automate* , char ); // retourne indice de l'evenement ou -1 sinon   
         void ajoutTransition(Automate* ); 

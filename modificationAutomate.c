@@ -198,6 +198,63 @@ void ajouterEtat(Automate * automate)
 
 }
 
+void suppEtat(Automate* automaton ) {
+    int pb, verif, reste, state;
+
+    // demannde etat 
+    do{
+        pb=0;
+        printf("\nNumero de l'etat depart : ");
+        verif= scanf("%d", &state);
+        reste=getchar();
+        if(verifieEntree(verif,state,reste)){
+            pb=1;
+        }
+        
+        
+        if ((state>automaton->nombreEtats) || (state<=0)){
+            printf("\nVeuillez rentrer un nombre entre 1 et %d.\n", automaton->nombreEtats);
+            pb=1;
+        }
+
+    }while(pb);
+
+    // Remove all transitions to the state to be deleted
+    for (int i = 0; i < automaton->nombreEtats; i++) {
+        for (int j = 0; j < automaton->nombreEvent; j++) {
+            automaton->matriceTransition[i][j][state] = 0;
+        }
+    }
+
+    // Decrease the number of states
+    automaton->nombreEtats--;
+
+    // Shift the initial and final states
+    for (int i = state; i < automaton->nombreEtats; i++) {
+        automaton->etatsInitiaux[i] = automaton->etatsInitiaux[i + 1];
+        automaton->etatsFinaux[i] = automaton->etatsFinaux[i + 1];
+    }
+
+    // Shift the transition matrix
+    for (int i = state; i < automaton->nombreEtats; i++) {
+        for (int j = 0; j < automaton->nombreEvent; j++) {
+            for (int k = state; k < automaton->nombreEtats; k++) {
+                automaton->matriceTransition[i][j][k] = automaton->matriceTransition[i][j][k + 1];
+            }
+            automaton->matriceTransition[i][j] = realloc(automaton->matriceTransition[i][j], automaton->nombreEtats * sizeof(int));
+        }
+        free(automaton->matriceTransition[i]);
+        automaton->matriceTransition[i] = automaton->matriceTransition[i + 1];
+        automaton->matriceTransition[i + 1] = NULL;
+    }
+
+    // Reallocate the initial and final states
+    automaton->etatsInitiaux = realloc(automaton->etatsInitiaux, automaton->nombreEtats * sizeof(int));
+    automaton->etatsFinaux = realloc(automaton->etatsFinaux, automaton->nombreEtats * sizeof(int));
+
+    // Reallocate the transition matrix
+    automaton->matriceTransition = realloc(automaton->matriceTransition, automaton->nombreEtats * sizeof(int**));
+}
 
 
 /**

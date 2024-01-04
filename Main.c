@@ -110,7 +110,7 @@ void supprimer(Automate* automate){
         scanf("%d", &choix2);
         switch(choix2){
             case 1:
-                printf("Fonction non fini");
+                suppEtat(automate);
                 break;
             case 2:
                 suppEtatInitial(automate);
