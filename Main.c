@@ -66,7 +66,7 @@ void ajout(Automate* automate){
                 ajoutTransition(automate);
                 break;
             case 5:
-                printf("Fonction non fini");
+                ajoutEvent(automate);
                 break;
             case 0 :
                 break;
@@ -122,7 +122,7 @@ void supprimer(Automate* automate){
                 suppTransition(automate);
                 break;
             case 5:
-                printf("Fonction non fini");
+                suppEvent(automate);
                 break;
             case 0 :
                 break;

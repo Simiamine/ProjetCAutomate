@@ -198,6 +198,12 @@ void ajouterEtat(Automate * automate)
 
 }
 
+
+/**
+ * supprime un etat dans un automate 
+ * input : un automate
+ * output : rien
+**/
 void suppEtat(Automate* automaton ) {
     int pb, verif, reste, state;
 
@@ -242,6 +248,10 @@ void suppEtat(Automate* automaton ) {
                 automaton->matriceTransition[i][j][k] = automaton->matriceTransition[i][j][k + 1];
             }
             automaton->matriceTransition[i][j] = realloc(automaton->matriceTransition[i][j], automaton->nombreEtats * sizeof(int));
+            if(!automaton->matriceTransition[i][j]){
+                allocPB=1;
+                return;
+            }
         }
         free(automaton->matriceTransition[i]);
         automaton->matriceTransition[i] = automaton->matriceTransition[i + 1];
@@ -250,10 +260,80 @@ void suppEtat(Automate* automaton ) {
 
     // Reallocate the initial and final states
     automaton->etatsInitiaux = realloc(automaton->etatsInitiaux, automaton->nombreEtats * sizeof(int));
+    if(!automaton->etatsInitiaux){
+        allocPB=1;
+        return;
+    }
     automaton->etatsFinaux = realloc(automaton->etatsFinaux, automaton->nombreEtats * sizeof(int));
+    if(!automaton->etatsFinaux){
+        allocPB=1;
+        return;
+    }
 
     // Reallocate the transition matrix
     automaton->matriceTransition = realloc(automaton->matriceTransition, automaton->nombreEtats * sizeof(int**));
+    if(!automaton->matriceTransition){
+        allocPB=1;
+        return;
+    }
+}
+
+
+/**
+ * supprime un evenement dans un automate 
+ * input : un automate
+ * output : rien
+**/
+void suppEvent(Automate* automaton) {
+    int pb, verif, reste, indiceEvent;
+    char event;
+    
+    //demande evenenement
+    do{
+        pb=0;
+        
+        printf("Liste des evenements creer : ");
+        for(int i =0; i<automaton->nombreEvent;i++){
+            printf("%c  ", automaton->listeEvent[i]);
+        }
+
+        printf("\nCaractere de l'evenement: ");
+        verif= scanf("%c", &event);
+        event=tolower(event);
+        reste=getchar();
+        indiceEvent = trouverindiceEvent(automaton, event);
+        if (verif != 1 || isdigit(event)||(reste!='\n')||(event==' ')||(indiceEvent == -1)) {
+            pb=1;
+            printf("\nErreur : Veuillez rentrer un evenement existant.\n");
+            if(reste!='\n'){
+                int c;
+                while ((c = getchar()) != '\n' && c != EOF);
+            }
+            
+    
+        }
+    }while(pb);
+    
+
+    // Shift the event list
+    for (int i = indiceEvent; i < automaton->nombreEvent - 1; i++) {
+        automaton->listeEvent[i] = automaton->listeEvent[i + 1];
+    }
+
+    // Shift the transition matrix
+    for (int i = 0; i < automaton->nombreEtats; i++) {
+        for (int j = indiceEvent; j < automaton->nombreEvent - 1; j++) {
+            free(automaton->matriceTransition[i][j]);
+            automaton->matriceTransition[i][j] = automaton->matriceTransition[i][j + 1];
+        }
+        automaton->matriceTransition[i] = realloc(automaton->matriceTransition[i], (automaton->nombreEvent - 1) * sizeof(int*));
+    }
+
+    // Decrease the number of events
+    automaton->nombreEvent--;
+
+    // Reallocate the event list
+    automaton->listeEvent = realloc(automaton->listeEvent, automaton->nombreEvent * sizeof(char));
 }
 
 
@@ -262,18 +342,44 @@ void suppEtat(Automate* automaton ) {
  * input : un automate
  * output : rien
 **/
-void ajouterEvent(Automate* automate, char event) {
-    // Augmenter le nombre d'evenements
-    automate->nombreEvent++;
+void ajoutEvent(Automate* automaton) {
+    int pb, verif, reste, indiceEvent;
+    char event;
+    
+    //demande evenenement
+    do{
+        pb=0;
+        printf("\nCaractere de l'evenement: ");
+        verif= scanf("%c", &event);
+        event=tolower(event);
+        reste=getchar();
+        if (verif != 1 || isdigit(event)||(reste!='\n')||(event==' ')) {
+            pb=1;
+            printf("Erreur : Veuillez entrer un unique caractere different des precedents.\n");
+            if(reste!='\n'){
+                int c;
+                while ((c = getchar()) != '\n' && c != EOF);
+            }
+            
+    
+        }
+    }while(pb);
 
-    // Ajouter l'evenement a la liste des evenements
-    automate->listeEvent = realloc(automate->listeEvent, automate->nombreEvent * sizeof(char));
-    automate->listeEvent[automate->nombreEvent - 1] = event;
+    if (rechercheEvenement(event, (automaton->nombreEvent)-1, automaton->listeEvent)){
+        printf("Erreur l'evenement existe deja");
+    }
 
-    // Ajouter les nouvelles transitions
-    for (int i = 0; i < automate->nombreEtats; i++) {
-        automate->matriceTransition[i] = realloc(automate->matriceTransition[i], automate->nombreEvent * sizeof(int*));
-        automate->matriceTransition[i][automate->nombreEvent - 1] = calloc(automate->nombreEtats, sizeof(int));
+    automaton->nombreEvent++;
+
+    // Reallocate the event list and add the new event
+    automaton->listeEvent = realloc(automaton->listeEvent, automaton->nombreEvent * sizeof(char));
+    automaton->listeEvent[automaton->nombreEvent - 1] = event;
+
+    // Reallocate the transition matrix
+    automaton->matriceTransition = realloc(automaton->matriceTransition, automaton->nombreEtats * sizeof(int**));
+    for (int i = 0; i < automaton->nombreEtats; i++) {
+        automaton->matriceTransition[i] = realloc(automaton->matriceTransition[i], automaton->nombreEvent * sizeof(int*));
+        automaton->matriceTransition[i][automaton->nombreEvent - 1] = calloc(automaton->nombreEtats, sizeof(int));
     }
 }
 
