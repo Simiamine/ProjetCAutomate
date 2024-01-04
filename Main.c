@@ -40,10 +40,10 @@ void ajout(Automate* automate){
                 ajouterEtat(automate);
                 break;
             case 2:
-                printf("Fonction non fini");
+                ajouterEtatInitial(automate);
                 break;
             case 3:
-                printf("Fonction non fini");
+                ajouterEtatFinal(automate);
                 break;
             case 4:
                 printf("Fonction non fini");

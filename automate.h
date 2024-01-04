@@ -24,13 +24,13 @@
         void freeAutomate(Automate* ); // supprime l'automate en cours d'utilisation 
 
         //Modification d'automate
-        void ajouterEtat(Automate * automate); // PB AVK REALLOC pas besoin de caractere et initialise seulement remplie rien LYLIANNE
+        void ajouterEtat(Automate * automate); // OK
         void ajouterEvent(Automate* , char ); // PB AVK REALLOC idem initialise mais remplie pas 
         int trouverindiceEvent(Automate* , char ); // retourne indice de l'evenement ou -1 sinon  OK 
         void modifierTransition(Automate* , int , int , char ); // modifie cellule OK  FIO A REFAIRE
         
-        void ajouterEtatInitial(Automate* , int ); // verifier que l'etat existe lylianne
-        void ajouterEtatFinal(Automate* , int ); // verifier que l'etat existe LYLIANNE
+        void ajouterEtatInitial(Automate*); // OK
+        void ajouterEtatFinal(Automate* ); // OK
         void ModifierAutomate(Automate* ); // a supp
 
 

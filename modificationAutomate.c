@@ -259,18 +259,56 @@ void transition(Automate* automate, int etatDepart, int etatArrivee, char event)
 }
 
 
-void ajouterEtatInitial(Automate* automate, int etat) {
+void ajouterEtatInitial(Automate* automate) {
     // Ajouter l'etat a la liste des etats initiaux
-    automate->etatsInitiaux[etat] = 1;
+    int rep, pb;
+
+    do{
+        pb=0;
+        printf("Numero de l'etat : ");
+        if(scanf("%d", &rep)!=1){
+            printf("\nErreur, veuillez rentrer 1 ou 0.\n");
+            pb=1;
+        }
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+        
+        if((rep>automate->nombreEtats) || (rep<=0)){
+            printf("\nErreur :veuillez rentrer soit 1 ou 0.\n");
+            pb=1;
+        }
+
+    }while(pb);
+    automate->etatsInitiaux[rep-1] = 1;
 }
 
-void ajouterEtatFinal(Automate* automate, int etat) {
+
+
+void ajouterEtatFinal(Automate* automate) {
     // Ajouter l'etat a la liste des etats finaux
-    automate->etatsFinaux[etat] = 1;
+    int rep, pb;
+
+    do{
+        pb=0;
+        printf("Numero de l'etat : ");
+        if(scanf("%d", &rep)!=1){
+            printf("\nErreur, veuillez rentrer 1 ou 0.\n");
+            pb=1;
+        }
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+        
+        if((rep>automate->nombreEtats) || (rep<=0)){
+            printf("\nErreur :veuillez rentrer soit 1 ou 0.\n");
+            pb=1;
+        }
+
+    }while(pb);
+    automate->etatsFinaux[rep-1] = 1;
 }
 
 
-
+/*
 //fonction ModifierAutomate qui va permettre de modifier l'automate (changer les transitions actuelles), ajouter ou supprimer un etat (en configurant ses transitions et son charactere d'identification), des evenements (en configurant pour chaque etat la où il va servir), des etats initiaux et finaux.
 void ModifierAutomate(Automate* automate) {
     int choix;
@@ -322,7 +360,7 @@ void ModifierAutomate(Automate* automate) {
             printf("Quel est l'etat initial a ajouter ?\n"); // aucun controle fait 
             int etatInitial;
             scanf("%d", &etatInitial);
-            ajouterEtatInitial(automate, etatInitial);
+            //ajouterEtatInitial(automate, etatInitial);
             break;
         case 5:
             printf("Quel est l'etat final a ajouter ?\n");  // aucun controle fait 
@@ -372,3 +410,4 @@ void ModifierAutomate(Automate* automate) {
             break;
     }
 }
+*/
