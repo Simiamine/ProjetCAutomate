@@ -5,9 +5,14 @@
 #include "automate.h"
 
 
+/**
+ * Vérifier si c'est un entier positif different de 0
+ * input : valeur du scanf, valeur rentré, le reste dans le tampon
+ * output : 1 si ce n'est pas un entier naturel superieur a 0 et 0 sinon
+**/
 int verifieEntree(int valeurScanf, int valeur, int reste){
     
-    // Vérifier si c'est un entier positif different de 0
+    
     if ((valeurScanf != 1) || (valeur <= 0)||(reste != '\n')) {
         
         
@@ -72,6 +77,12 @@ Automate* saisirAutomate(){
 
 }
 
+
+/**
+ * Iniitillise l'automate
+ * input : nombre d'etat, nombre d'evenement 
+ * output : l'automate cree
+**/
 Automate* initAutomate(int nombreEtats, int nombreEvent) {
     // Allouer de la mémoire pour l'automate
     Automate* automate = malloc(sizeof(Automate));
@@ -128,6 +139,12 @@ Automate* initAutomate(int nombreEtats, int nombreEvent) {
     return automate;
 }
 
+
+/**
+ * Verifie que l'evenement a rajouter n'existe pas 
+ * input : le caractere du nouveau evenement a rajouter, taille de la liste, la liste 
+ * output : 1 si l'evenement existe deja, 0 sinon
+**/
 int rechercheEvenement(char c, int indiceCourant, char* liste) {
     
     for (int i = 0; i < indiceCourant; i++) {
@@ -138,6 +155,12 @@ int rechercheEvenement(char c, int indiceCourant, char* liste) {
     return 0; 
 }
 
+
+/**
+ * Remplie la liste des evenements 
+ * input : un automate 
+ * output : rien
+**/
 void remplirEvenement(Automate* automate){
     int verif;
     int pb;
@@ -166,7 +189,11 @@ void remplirEvenement(Automate* automate){
     }
 }
 
-
+/**
+ * Remplie un automate 
+ * input : un automate 
+ * output : rien
+**/
 void remplirAEF(Automate* automate) {
     // Parcourir chaque état
     int pb;
@@ -250,7 +277,11 @@ void remplirAEF(Automate* automate) {
 
 
 
-
+/**
+ * Affiche sur le terminal un automate
+ * input : un automate 
+ * output : rien
+**/
 void afficherAEF(Automate* automate) {
     // Afficher la liste des evenements
     printf("Liste des evenements :\n");
@@ -290,7 +321,11 @@ void afficherAEF(Automate* automate) {
 }
 
 
-
+/**
+ * Supprime un automate
+ * input : un automate 
+ * output : rien
+**/
 void freeAutomate(Automate* automate) {
     // Liberer la memoire allouee pour la matrice de transition
     for (int i = 0; i < automate->nombreEtats; i++) {

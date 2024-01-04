@@ -6,7 +6,11 @@
 
 int allocPB = 0;
 
-
+/**
+ * Affiche le menu principale
+ * input : rien 
+ * output : rien
+**/
 void afficheMenu(){
     printf("\n\t Menu\n\n");
     printf("\n1\tSaisir un AEF");
@@ -15,9 +19,16 @@ void afficheMenu(){
     printf("\n4\tSauvegarder un AEF sur un fichier");
     printf("\n5\tMot, Complet et deterministe");
     printf("\n6\tOperation sur un AEF");
+    printf("\n7\tAfficher AEF");
     printf("\n0\tQuitter\n");
 }
 
+
+/**
+ * Affiche le menu d'ajout
+ * input : rien 
+ * output : rien
+**/
 void afficheMenuAjouter(){
     
     printf("\n1\tAjouter un etat");
@@ -28,6 +39,12 @@ void afficheMenuAjouter(){
     printf("\n0\tRevenir en arriere\n");
 }
 
+
+/**
+ * execute les fonctions d'ajout en fonction du menu
+ * input : un automate 
+ * output : rien
+**/
 void ajout(Automate* automate){
     int choix2;
     do{                    
@@ -64,7 +81,11 @@ void ajout(Automate* automate){
     }while((choix2!=0)&(!allocPB));
 }
 
-
+/**
+ * Affiche le menu de suppression
+ * input : rien 
+ * output : rien
+**/
 void afficheMenuSupprimer(){
     
     printf("\n1\tSupprimer un etat");
@@ -75,7 +96,11 @@ void afficheMenuSupprimer(){
     printf("\n0\tRevenir en arriere\n");
 }
 
-
+/**
+ * execute les fonctions de suppression en fonction du menu
+ * input : un automate 
+ * output : rien
+**/
 void supprimer(Automate* automate){
     int choix2;
     do{                    
@@ -113,6 +138,11 @@ void supprimer(Automate* automate){
 
 }
 
+/**
+ * Affiche le menu des mots, complet et deterministe
+ * input : rien 
+ * output : rien
+**/
 void afficheMenuMCD(){
     
     printf("\n1\tReconnaitre un mot");
@@ -123,7 +153,11 @@ void afficheMenuMCD(){
     printf("\n0\tRevenir en arriere\n");
 }
 
-
+/**
+ * execute les fonctions des mots, complet et deterministe
+ * input : un automate 
+ * output : rien
+**/
 void mcd(Automate* automate){
     int choix2;
     do{                    
@@ -183,7 +217,11 @@ void mcd(Automate* automate){
 }
 
 
-
+/**
+ * Affiche le menu des operations
+ * input : rien 
+ * output : rien
+**/
 void afficheMenuOper(){
     
     printf("\n1\tComplement");
@@ -272,42 +310,18 @@ int main(){
                 break;
 
             case 6:
-                printf("\n\tReconnaître un mot\n");
+                printf("\n\tOpper\n");
                 break;
             // ANCIEN A SUPP 
             case 7:
-                printf("\n\tVérifier si un AEF est complet\n");
+                if (automate != NULL) {
+                    afficherAEF(automate);
+                }else{
+                    printf("Erreur aucun AEF est en cours d'utilisation");
+                };
                 break;
 
-            case 8:
-                printf("\n\tRendre un AEF complet\n");
-                break;
-
-            case 9:
-                printf("\n\tVérifier si un AEF est deterministe\n");
-                break;
-
-            case 10:
-                printf("\n\tRendre un AEF deterministe\n");
-                break;
-
-            case 11:
-                printf("\n\tComplément d'un AEF\n");
-                break;
-
-                case 12:
-                printf("\n\tMirroir d'un AEF\n");
-                break;
-
-            case 13:
-                printf("\n\tProduit de deux AEF\n");
-                break;
             
-            case 14:
-                printf("\n\tConcaténation de deux AEF\n");
-                break;
-
-            // ANCIEN A SUPP
             case 0:
                 printf("\n\tAu revoir !\n");
                 break;

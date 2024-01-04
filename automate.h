@@ -13,83 +13,50 @@
             char* listeEvent; // Liste des événements : listeEvent[event] = lettre de l'événement à l'indice event
         } Automate;
 
+
+
         // Automaton creation
-        Automate* initAutomate(int , int); // initialise l'automate
-        void remplirAEF(Automate* ); // remplie l'automate :  etat initiaux, finaux et matrice
-        Automate* saisirAutomate(); // recupere les informations de base et execute les fonctions de creation d'automate
         int verifieEntree(int , int, int ); // utiliser pour controler les entrees de nombres positif
-        void remplirEvenement(Automate* ); // remplie les evenements
-        int rechercheEvenement(char , int , char* ); // recherche un evenement parmi ceux deja cree
-        void afficherAEF(Automate* ); // sur le terminal 
-        void freeAutomate(Automate* ); // supprime l'automate en cours d'utilisation 
+        Automate* saisirAutomate(); // recupere les informations de base et execute les fonctions de creation d'automate
+        Automate* initAutomate(int , int); // initialise l'automate
+        int rechercheEvenement(char , int , char* ); // recherche un evenement parmi ceux deja cree jusqu'à l'indice indiqué
+        void remplirEvenement(Automate* ); 
+        void remplirAEF(Automate* ); 
+        void afficherAEF(Automate* ); 
+        void freeAutomate(Automate* );  
 
         //Modification d'automate
-        void ajouterEtat(Automate * ); // OK
+        int* ajouterValeur(int* , int , int );
+        void ajouterEtat(Automate * ); 
         void ajouterEvent(Automate* , char ); // PB AVK REALLOC idem initialise mais remplie pas 
-        int trouverindiceEvent(Automate* , char ); // retourne indice de l'evenement ou -1 sinon  OK 
-        void ajoutTransition(Automate* ); // modifie cellule OK  FIO A REFAIRE
-        void suppTransition(Automate* ); //ok
-        void suppEtatInitial(Automate* ) ; //ok
-        void suppEtatFinal(Automate* ) ; //ok
-        void ajouterEtatInitial(Automate*); // OK
-        void ajouterEtatFinal(Automate* ); // OK
-        void ModifierAutomate(Automate* ); // a supp
+        int trouverindiceEvent(Automate* , char ); // retourne indice de l'evenement ou -1 sinon   
+        void ajoutTransition(Automate* ); 
+        void suppTransition(Automate* ); 
+        void transition(Automate* , int , int , char ); //NON UTILISE va dire si la transition existe ou pas 
+        void ajouterEtatInitial(Automate*);
+        void suppEtatInitial(Automate* ) ; 
+        void ajouterEtatFinal(Automate* ); 
+        void suppEtatFinal(Automate* ) ; 
+        
 
 
         //Manipulation de fichier json
-        void enregistrerAutomate(Automate* );  // ok
-        Automate* chargerAutomate(); // ok
+        void enregistrerAutomate(Automate* );  
+        Automate* chargerAutomate(); 
 
-        // fonction utile
-        void demander0ou1(int * , char * );
+        
 
 
-        // operation 
-        Automate* unionAutomate(Automate* , Automate* );//jcp ce que c'est ni ou le mettre
-
+        
         // Mot, complet, deterministe
         int motValide(Automate* automate, char* mot); // OK attendre rendre deter
-        int estDeterministe(Automate* automate); // OK
-        int estComplet(Automate* automate); // ok
-        Automate* rendreDeterministe(Automate* automate); // a refaire Lylianne
-        Automate* rendreComplet(Automate* automate); // OK
-        void operationsAutomate(); // a supp
-
-        // main et menu reste a voir ensemble
-        void menu();
-        int main();
-
-
-
-
-
+        int estDeterministe(Automate* automate); 
+        int estComplet(Automate* automate); 
+        Automate* rendreDeterministe(Automate* automate); // En cours
+        Automate* rendreComplet(Automate* automate); 
         
 
-
-
-
-/*
-
         
-
-        //Automaton in files
-        void serialization(Automaton);
-        void deserialization(Automaton);
-
-        //Modification in Automaton
-        void changeFinalStates(Automaton);
-        void changeInitialStates(Automaton);
-        void changeCells(Automaton);
-
-        
-
-        //Suppression in Automaton
-        void deleteAutomaton(Automaton);
-        void deleteStateInAutomaton(Automaton);
-        void deleteEventInAutomaton(Automaton);
-
-
-*/
         
 
 

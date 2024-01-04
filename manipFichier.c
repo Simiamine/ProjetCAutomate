@@ -6,7 +6,11 @@
 
 
 
-// enregistrer l'automate dans un fichier .json en demandant a l'utilisateur le nom du fichier et en verifiant si le fichier existe deja ou pas
+/**
+ * enregistrer l'automate dans un fichier .json en demandant a l'utilisateur le nom du fichier et en verifiant si le fichier existe deja ou pas
+ * input : un automate 
+ * output : rien
+**/
 void enregistrerAutomate(Automate* automate) {
     char nomFichier[100];
     printf("Quel est le nom du fichier ?\n");
@@ -79,7 +83,12 @@ void enregistrerAutomate(Automate* automate) {
 
 
 
-// charger un automate a partir d'un fichier .json en demandant a l'utilisateur le nom du fichier et en verifiant si le fichier existe ou pas  
+//   
+/**
+ * charger un automate a partir d'un fichier .json en demandant a l'utilisateur le nom du fichier et en verifiant si le fichier existe ou pas
+ * input : rien 
+ * output : un automate
+**/
 Automate* chargerAutomate() {
     char nomFichier[100];
     printf("Quel est le nom du fichier ?\n");

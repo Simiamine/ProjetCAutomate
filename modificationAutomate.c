@@ -4,6 +4,12 @@
 #include <ctype.h>
 #include "automate.h"
 
+
+/**
+ * ajoute une valeur dans un tableau en reallouant la place 
+ * input : un tableau, la taille du tableau et la valeur a rajouter 
+ * output : le tabeau modifie
+**/
 int* ajouterValeur(int* tableau, int taille, int valeur) {
     // Utiliser realloc pour agrandir la taille du tableau
     tableau = realloc(tableau, (taille + 1) * sizeof(int));
@@ -21,7 +27,11 @@ int* ajouterValeur(int* tableau, int taille, int valeur) {
     return tableau;
 }
 
-
+/**
+ * ajoute un etat dans un automate 
+ * input : un automate
+ * output : rien
+**/
 void ajouterEtat(Automate * automate)
 {
     int pb, init, final;
@@ -190,7 +200,11 @@ void ajouterEtat(Automate * automate)
 
 
 
-
+/**
+ * ajoute un evenement dans un automate A REVOIR 
+ * input : un automate
+ * output : rien
+**/
 void ajouterEvent(Automate* automate, char event) {
     // Augmenter le nombre d'evenements
     automate->nombreEvent++;
@@ -207,7 +221,12 @@ void ajouterEvent(Automate* automate, char event) {
 }
 
 
-//fonction qui va retrouver l'entier correspondant a la lettre de l'evenement
+
+/**
+ * fonction qui va retrouver l'entier correspondant a la lettre de l'evenement 
+ * input : un automate et le caractere de l'evenement recherche
+ * output : indice si trouve ou -1 sinon
+**/
 int trouverindiceEvent(Automate* automate, char event) {
     int indiceEvent = -1;
     for (int j = 0; j < automate->nombreEvent; j++) {
@@ -219,7 +238,13 @@ int trouverindiceEvent(Automate* automate, char event) {
 }
 
 
-// fonction ajoutTransition qui va permettre d'ajouter une transition de l'automate
+// 
+
+/**
+ * Va permettre d'ajouter une transition de l'automate
+ * input : un automate 
+ * output : rien
+**/
 void ajoutTransition(Automate* automate) {
     int pb,verif,reste, depart, arrive, indiceEvent;
     char event;
@@ -296,7 +321,11 @@ void ajoutTransition(Automate* automate) {
     
 }
 
-
+/**
+ * Va permettre de supprimer une transition de l'automate
+ * input : un automate 
+ * output : rien
+**/
 void suppTransition(Automate* automate) {
     int pb,verif,reste, depart, arrive, indiceEvent;
     char event;
@@ -373,8 +402,12 @@ void suppTransition(Automate* automate) {
     
 }
 
-// NON UTILISE fonction transition qui va dire si la transition existe ou pas 
 
+/**
+ * NON UTILISE fonction transition qui va dire si la transition existe ou pas 
+ * input : un automate, numero de letat de depart et numero de letat d'arrive
+ * output : rien
+**/
 void transition(Automate* automate, int etatDepart, int etatArrivee, char event) {
     // Trouver l'indice de l'evenement correspondant a la lettre
     int indiceEvent = trouverindiceEvent(automate, event); 
@@ -393,7 +426,11 @@ void transition(Automate* automate, int etatDepart, int etatArrivee, char event)
     }
 }
 
-
+/**
+ * ajoute un etat intial
+ * input : un automate
+ * output : rien
+**/
 void ajouterEtatInitial(Automate* automate) {
     // Ajouter l'etat a la liste des etats initiaux
     int rep, pb, verif,reste;
@@ -417,6 +454,12 @@ void ajouterEtatInitial(Automate* automate) {
     automate->etatsInitiaux[rep-1] = 1;
 }
 
+
+/**
+ * supprime un etat intial
+ * input : un automate
+ * output : rien
+**/
 void suppEtatInitial(Automate* automate) {
     // Ajouter l'etat a la liste des etats initiaux
     int rep, pb, verif,reste;
@@ -441,7 +484,11 @@ void suppEtatInitial(Automate* automate) {
 }
 
 
-
+/**
+ * ajoute un etat final
+ * input : un automate
+ * output : rien
+**/
 void ajouterEtatFinal(Automate* automate) {
     // Ajouter l'etat a la liste des etats finaux
     int rep, pb, verif,reste;
@@ -465,6 +512,12 @@ void ajouterEtatFinal(Automate* automate) {
     automate->etatsFinaux[rep-1] = 1;
 }
 
+
+/**
+ * supprime un etat final
+ * input : un automate
+ * output : rien
+**/
 void suppEtatFinal(Automate* automate) {
     // Ajouter l'etat a la liste des etats finaux
     int rep, pb, verif,reste;
@@ -489,106 +542,3 @@ void suppEtatFinal(Automate* automate) {
 }
 
 
-/*
-//fonction ModifierAutomate qui va permettre de modifier l'automate (changer les transitions actuelles), ajouter ou supprimer un etat (en configurant ses transitions et son charactere d'identification), des evenements (en configurant pour chaque etat la où il va servir), des etats initiaux et finaux.
-void ModifierAutomate(Automate* automate) {
-    int choix;
-    //Afficher l'automate
-    afficherAEF(automate);
-    //Demander a l'utilisateur ce qu'il veut faire
-    printf("Que voulez-vous faire ?\n");
-    printf("1. Modifier une transition\n");
-    printf("2. Ajouter un etat\n");
-    printf("3. Ajouter un evenement\n");
-    printf("4. Ajouter un etat initial\n");
-    printf("5. Ajouter un etat final\n");
-    printf("6. Supprimer un etat\n");
-    printf("7. Supprimer un evenement\n");
-    printf("8. Supprimer un etat initial\n");
-    printf("9. Supprimer un etat final\n");
-    printf("10. Quitter\n");
-    scanf("%d", &choix); 
-    switch (choix) {
-        case 1:
-            printf("Quelle transition voulez-vous modifier ?\n");
-            int etatDepart, etatArrivee;
-            char event1;
-            printf("Etat de depart : ");
-            scanf("%d", &etatDepart);
-            printf("Etat d'arrivee : ");
-            scanf("%d", &etatArrivee);
-            printf("Event : ");
-            scanf(" %c", &event1);
-            printf("Valeur actuelle : %d\n", automate->matriceTransition[etatDepart][event1][etatArrivee]);
-            printf("Voulez vous l'inverser ? (1 pour oui, 0 pour non) : ");
-            int choixInversion; // pas utiliser
-            scanf("%d", &choixInversion);
-            modifierTransition(automate, etatDepart, etatArrivee, event1);
-            break;
-        case 2:
-            printf("Quel est l'identifiant de l'etat a ajouter ?\n");
-            char identifiant; // pas besoin
-            scanf(" %c", &identifiant);
-            //ajouterEtat(automate, identifiant);
-            break;
-        case 3:
-            printf("Quel est l'evenement a ajouter ?\n");
-            char event2;
-            scanf(" %c", &event2);
-            ajouterEvent(automate, event2);
-            break;
-        case 4:
-            printf("Quel est l'etat initial a ajouter ?\n"); // aucun controle fait 
-            int etatInitial;
-            scanf("%d", &etatInitial);
-            //ajouterEtatInitial(automate, etatInitial);
-            break;
-        case 5:
-            printf("Quel est l'etat final a ajouter ?\n");  // aucun controle fait 
-            int etatFinal;
-            scanf("%d", &etatFinal);
-            ajouterEtatFinal(automate, etatFinal);
-            break;
-        case 6: // pas de suppression + manque nb etat, etat initial et final
-            printf("Quel est l'etat a supprimer ?\n");
-            int etat;
-            scanf("%d", &etat);
-            for (int i = 0; i < automate->nombreEtats; i++) {
-                for (int j = 0; j < automate->nombreEvent; j++) {
-                    automate->matriceTransition[i][j][etat] = 0;
-                }
-            }
-            for (int i = 0; i < automate->nombreEtats; i++) {
-                for (int j = 0; j < automate->nombreEvent; j++) {
-                    automate->matriceTransition[etat][j][i] = 0;
-                }
-            }
-            break;
-        case 7: //pas de suppression
-            printf("Quel est l'evenement a supprimer ?\n");
-            int eventSuppr;
-            scanf("%d", &eventSuppr);
-            for (int i = 0; i < automate->nombreEtats; i++) {
-                automate->matriceTransition[i][eventSuppr][i] = 0;
-            }
-            break;
-        case 8: //supprimer un etat initial (on ne peut pas supprimer un etat initial qui est aussi final)
-            printf("Quel est l'etat initial a supprimer ?\n");
-            int etatInitialSuppr;
-            scanf("%d", &etatInitialSuppr);
-            automate->etatsInitiaux[etatInitialSuppr] = 0; //pas supprimer
-            break;
-        case 9: //supprimer un etat final (on ne peut pas supprimer un etat final qui est aussi initial)
-            printf("Quel est l'etat final a supprimer ?\n");
-            int etatFinalSuppr;
-            scanf("%d", &etatFinalSuppr);
-            automate->etatsFinaux[etatFinalSuppr] = 0; //pas supprimer
-            break;
-        case 10:
-            break; // pas besoin
-        default:
-            printf("Erreur : choix invalide\n");
-            break;
-    }
-}
-*/

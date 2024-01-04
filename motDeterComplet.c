@@ -5,8 +5,11 @@
 #include <ctype.h>
 #include "automate.h"
 
-
-// motvalide qui va permettre de tester si un mot est accepte par l'automate ou pas
+/**
+ * Teste si un mot est accepte par l'automate ou pas
+ * input : un automate et un mot
+ * output : 1 si c'est valide 0 sinon
+**/
 int motValide(Automate* automate, char* mot) {
     // A RENDRE DETERMINISTE AVANT SI CE N EST PAS LE CAS 
     
@@ -69,8 +72,11 @@ int motValide(Automate* automate, char* mot) {
 
 
 
-
-// estDeterministe qui va permettre de savoir si l'automate est deterministe ou pas
+/**
+ * permet de savoir si l'automate est deterministe ou pas
+ * input : un automate 
+ * output : 1 si c'est deterministe 0 sinon
+**/
 int estDeterministe(Automate* automate) {
     // Parcourir chaque etat
     int nombreEtatsLies = 0;
@@ -104,8 +110,11 @@ int estDeterministe(Automate* automate) {
 
 
 
-
-// estComplet qui va permettre de savoir si l'automate est complet ou pas
+/**
+ * permet de savoir si l'automate est complet ou pas
+ * input : un automate 
+ * output : 1 si c'est complet 0 sinon
+**/
 int estComplet(Automate* automate) {
     // Parcourir chaque etat
     for (int i = 0; i < automate->nombreEtats; i++) {
@@ -130,7 +139,12 @@ int estComplet(Automate* automate) {
     return 1;
 }
 
-// rendreComplet qui va permettre de rendre complet l'automate 
+// rendreComplet qui va 
+/**
+ * permet de rendre complet l'automate 
+ * input : un automate 
+ * output : automate complet
+**/
 Automate* rendreComplet(Automate* automate) {
     
     if(estComplet(automate)){
@@ -210,6 +224,11 @@ Automate* rendreComplet(Automate* automate) {
 
 
 // rendreDeterministe qui va permettre de rendre l'automate deterministe en partant de l'automate charge et en lui ajoutant un etat poubelle qui sera lie a tous les etats qui n'ont pas de transition pour un evenement
+/**
+ * permet de rendre deterministe l'automate 
+ * input : un automate 
+ * output : automate deterministe
+**/
 Automate* rendreDeterministe(Automate* automate) {
     // Si l'automate est deterministe, on ne fait rien
     if (estDeterministe(automate)) {
@@ -224,56 +243,3 @@ Automate* rendreDeterministe(Automate* automate) {
 
 
 
-
-// Function for operations on the automate
-void operationsAutomate() {
-    int choix;
-    Automate* automate1 = NULL;
-    Automate* automate2 = NULL;
-    do {
-        printf("Que voulez-vous faire ?\n");
-        printf("1. Verifier si l'automate est deterministe\n");
-        printf("2. Rendre l'automate deterministe\n");
-        printf("3. Verifier si l'automate est complet\n");
-        printf("4. Retourner au menu principal\n");
-        scanf("%d", &choix);
-        switch (choix) {
-            case 1:
-                if (automate1 != NULL) { // pk je peux creer une matrice faire les operations et laisse ou enregistrer apres 
-                    freeAutomate(automate1);
-                }
-                automate1 = chargerAutomate();
-                afficherAEF(automate1);
-                if (estDeterministe(automate1)) {
-                    printf("L'automate est deterministe\n");
-                } else {
-                    printf("L'automate n'est pas deterministe\n");
-                }
-                break;
-            case 2:
-                if (automate1 != NULL) {
-                    freeAutomate(automate1);
-                }
-                automate1 = chargerAutomate();
-                automate1 = rendreDeterministe(automate1);
-                printf("L'automate a ete rendu deterministe\n");
-                break;
-            case 3:
-                if (automate1 != NULL) {
-                    freeAutomate(automate1);
-                }
-                automate1 = chargerAutomate();
-                if (estComplet(automate1)) {
-                    printf("L'automate est complet\n");
-                } else {
-                    printf("L'automate n'est pas complet\n");
-                }
-                break;
-            case 4:
-                return; // Return to the main menu
-            default:
-                printf("Erreur : choix invalide\n");
-                break;
-        }
-    } while (choix != 4);
-}
