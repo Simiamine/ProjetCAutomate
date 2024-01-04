@@ -82,6 +82,8 @@ void deleteEvent(Automaton* automaton, int event) {
     automaton->eventList = realloc(automaton->eventList, automaton->numEvents * sizeof(char));
 }
 
+#include <stdio.h>
+
 void addEvent(Automaton* automaton, char newEvent) {
     // Check if the event already exists
     for (int i = 0; i < automaton->numEvents; i++) {
@@ -103,6 +105,36 @@ void addEvent(Automaton* automaton, char newEvent) {
     for (int i = 0; i < automaton->numStates; i++) {
         automaton->transitionMatrix[i] = realloc(automaton->transitionMatrix[i], automaton->numEvents * sizeof(int*));
         automaton->transitionMatrix[i][automaton->numEvents - 1] = calloc(automaton->numStates, sizeof(int));
+    }
+
+    // Ask the user if the new event should be associated with states
+    char answer;
+    printf("Should the new event be associated with states? (y/n): ");
+    scanf(" %c", &answer);
+
+    if (answer == 'y' || answer == 'Y') {
+        // Ask the user for the start and end states
+        int startState, endState;
+        while (1) {
+            printf("Enter a start state (or -1 to stop): ");
+            scanf("%d", &startState);
+
+            if (startState == -1) {
+                break;
+            }
+
+            printf("Enter an end state: ");
+            scanf("%d", &endState);
+
+            // Check if the states are valid
+            if (startState < 0 || startState >= automaton->numStates || endState < 0 || endState >= automaton->numStates) {
+                printf("Invalid states.\n");
+                continue;
+            }
+
+            // Add the transition
+            automaton->transitionMatrix[startState][automaton->numEvents - 1][endState] = 1;
+        }
     }
 }
 
