@@ -46,7 +46,7 @@ void ajout(Automate* automate){
                 ajouterEtatFinal(automate);
                 break;
             case 4:
-                printf("Fonction non fini");
+                ajoutTransition(automate);
                 break;
             case 5:
                 printf("Fonction non fini");
@@ -88,13 +88,13 @@ void supprimer(Automate* automate){
                 printf("Fonction non fini");
                 break;
             case 2:
-                printf("Fonction non fini");
+                suppEtatInitial(automate);
                 break;
             case 3:
-                printf("Fonction non fini");
+                suppEtatFinal(automate);
                 break;
             case 4:
-                printf("Fonction non fini");
+                suppTransition(automate);
                 break;
             case 5:
                 printf("Fonction non fini");

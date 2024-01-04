@@ -219,26 +219,161 @@ int trouverindiceEvent(Automate* automate, char event) {
 }
 
 
-// fonction modifierTransition qui va permettre de modifier une transition de l'automate. va chercher l'event, inverser 0 et 1 pour la transition choisie
-void modifierTransition(Automate* automate, int etatDepart, int etatArrivee, char event) {
-    // Trouver l'indice de l'evenement correspondant a la lettre
-    int indiceEvent = trouverindiceEvent(automate, event);  
-    // Si l'evenement n'existe pas, le mot n'est pas valide
-    if (indiceEvent == -1) {
-        printf("Erreur : l'evenement n'existe pas\n");
-        return;
-    }
+// fonction ajoutTransition qui va permettre d'ajouter une transition de l'automate
+void ajoutTransition(Automate* automate) {
+    int pb,verif,reste, depart, arrive, indiceEvent;
+    char event;
 
-    // Inverser la transition
-    if (automate->matriceTransition[etatDepart][indiceEvent][etatArrivee] == 1) {
-        automate->matriceTransition[etatDepart][indiceEvent][etatArrivee] = 0;
-    } else {
-        automate->matriceTransition[etatDepart][indiceEvent][etatArrivee] = 1;
-    }
+    // demannde etat depart
+    do{
+        pb=0;
+        printf("\nNumero de l'etat depart : ");
+        verif= scanf("%d", &depart);
+        reste=getchar();
+        if(verifieEntree(verif,depart,reste)){
+            pb=1;
+        }
+        
+        
+        if ((depart>automate->nombreEtats) || (depart<=0)){
+            printf("\nVeuillez rentrer un nombre entre 1 et %d.\n", automate->nombreEtats);
+            pb=1;
+        }
+
+    }while(pb);
+
+
+    //demande etat arrive
+    do{
+        pb=0;
+        printf("\nNumero de l'etat arrive : ");
+        verif= scanf("%d", &arrive);
+        reste=getchar();
+        if(verifieEntree(verif,arrive,reste)){
+            pb=1;
+        }
+        
+        
+        if ((arrive>automate->nombreEtats) || (arrive<=0)){
+            printf("\nVeuillez rentrer un nombre entre 1 et %d.\n", automate->nombreEtats);
+            pb=1;
+        }
+
+    }while(pb);
+
+
+    //demande evenenement
+    
+    do{
+        pb=0;
+        
+        printf("Liste des evenements creer : ");
+        for(int i =0; i<automate->nombreEvent;i++){
+            printf("%c  ", automate->listeEvent[i]);
+        }
+
+        printf("\nCaractere de l'evenement: ");
+        verif= scanf("%c", &event);
+        event=tolower(event);
+        reste=getchar();
+        indiceEvent = trouverindiceEvent(automate, event);
+        if (verif != 1 || isdigit(event)||(reste!='\n')||(event==' ')||(indiceEvent == -1)) {
+            pb=1;
+            printf("\nErreur : Veuillez rentrer un evenement existant.\n");
+            if(reste!='\n'){
+                int c;
+                while ((c = getchar()) != '\n' && c != EOF);
+            }
+            
+    
+        }
+    }while(pb);
+    
+    
+
+    automate->matriceTransition[depart-1][indiceEvent][arrive-1] = 1;
+    
+    
 }
 
 
-// fonction transition qui va dire si la transition existe ou pas
+void suppTransition(Automate* automate) {
+    int pb,verif,reste, depart, arrive, indiceEvent;
+    char event;
+
+    // demannde etat depart
+    do{
+        pb=0;
+        printf("\nNumero de l'etat depart : ");
+        verif= scanf("%d", &depart);
+        reste=getchar();
+        if(verifieEntree(verif,depart,reste)){
+            pb=1;
+        }
+        
+        
+        if ((depart>automate->nombreEtats) || (depart<=0)){
+            printf("\nVeuillez rentrer un nombre entre 1 et %d.\n", automate->nombreEtats);
+            pb=1;
+        }
+
+    }while(pb);
+
+
+    //demande etat arrive
+    do{
+        pb=0;
+        printf("\nNumero de l'etat arrive : ");
+        verif= scanf("%d", &arrive);
+        reste=getchar();
+        if(verifieEntree(verif,arrive,reste)){
+            pb=1;
+        }
+        
+        
+        if ((arrive>automate->nombreEtats) || (arrive<=0)){
+            printf("\nVeuillez rentrer un nombre entre 1 et %d.\n", automate->nombreEtats);
+            pb=1;
+        }
+
+    }while(pb);
+
+
+    //demande evenenement
+    
+    do{
+        pb=0;
+        
+        printf("Liste des evenements creer : ");
+        for(int i =0; i<automate->nombreEvent;i++){
+            printf("%c  ", automate->listeEvent[i]);
+        }
+
+        printf("\nCaractere de l'evenement: ");
+        verif= scanf("%c", &event);
+        event=tolower(event);
+        reste=getchar();
+        indiceEvent = trouverindiceEvent(automate, event);
+        if (verif != 1 || isdigit(event)||(reste!='\n')||(event==' ')||(indiceEvent == -1)) {
+            pb=1;
+            printf("\nErreur : Veuillez rentrer un evenement existant.\n");
+            if(reste!='\n'){
+                int c;
+                while ((c = getchar()) != '\n' && c != EOF);
+            }
+            
+    
+        }
+    }while(pb);
+    
+    
+
+    automate->matriceTransition[depart-1][indiceEvent][arrive-1] = 0;
+    
+    
+}
+
+// NON UTILISE fonction transition qui va dire si la transition existe ou pas 
 
 void transition(Automate* automate, int etatDepart, int etatArrivee, char event) {
     // Trouver l'indice de l'evenement correspondant a la lettre
@@ -261,20 +396,20 @@ void transition(Automate* automate, int etatDepart, int etatArrivee, char event)
 
 void ajouterEtatInitial(Automate* automate) {
     // Ajouter l'etat a la liste des etats initiaux
-    int rep, pb;
+    int rep, pb, verif,reste;
 
     do{
         pb=0;
-        printf("Numero de l'etat : ");
-        if(scanf("%d", &rep)!=1){
-            printf("\nErreur, veuillez rentrer 1 ou 0.\n");
+        printf("\nNumero de l'etat  : ");
+        verif= scanf("%d", &rep);
+        reste=getchar();
+        if(verifieEntree(verif,rep,reste)){
             pb=1;
         }
-        int c;
-        while ((c = getchar()) != '\n' && c != EOF);
         
-        if((rep>automate->nombreEtats) || (rep<=0)){
-            printf("\nErreur :veuillez rentrer soit 1 ou 0.\n");
+        
+        if ((rep>automate->nombreEtats) || (rep<=0)){
+            printf("\nVeuillez rentrer un nombre entre 1 et %d.\n", automate->nombreEtats);
             pb=1;
         }
 
@@ -282,29 +417,75 @@ void ajouterEtatInitial(Automate* automate) {
     automate->etatsInitiaux[rep-1] = 1;
 }
 
+void suppEtatInitial(Automate* automate) {
+    // Ajouter l'etat a la liste des etats initiaux
+    int rep, pb, verif,reste;
+
+    do{
+        pb=0;
+        printf("\nNumero de l'etat  : ");
+        verif= scanf("%d", &rep);
+        reste=getchar();
+        if(verifieEntree(verif,rep,reste)){
+            pb=1;
+        }
+        
+        
+        if ((rep>automate->nombreEtats) || (rep<=0)){
+            printf("\nVeuillez rentrer un nombre entre 1 et %d.\n", automate->nombreEtats);
+            pb=1;
+        }
+
+    }while(pb);
+    automate->etatsInitiaux[rep-1] = 0;
+}
+
 
 
 void ajouterEtatFinal(Automate* automate) {
     // Ajouter l'etat a la liste des etats finaux
-    int rep, pb;
+    int rep, pb, verif,reste;
 
     do{
         pb=0;
-        printf("Numero de l'etat : ");
-        if(scanf("%d", &rep)!=1){
-            printf("\nErreur, veuillez rentrer 1 ou 0.\n");
+        printf("\nNumero de l'etat : ");
+        verif= scanf("%d", &rep);
+        reste=getchar();
+        if(verifieEntree(verif,rep,reste)){
             pb=1;
         }
-        int c;
-        while ((c = getchar()) != '\n' && c != EOF);
         
-        if((rep>automate->nombreEtats) || (rep<=0)){
-            printf("\nErreur :veuillez rentrer soit 1 ou 0.\n");
+        
+        if ((rep>automate->nombreEtats) || (rep<=0)){
+            printf("\nVeuillez rentrer un nombre entre 1 et %d.\n", automate->nombreEtats);
             pb=1;
         }
 
     }while(pb);
     automate->etatsFinaux[rep-1] = 1;
+}
+
+void suppEtatFinal(Automate* automate) {
+    // Ajouter l'etat a la liste des etats finaux
+    int rep, pb, verif,reste;
+
+    do{
+        pb=0;
+        printf("\nNumero de l'etat : ");
+        verif= scanf("%d", &rep);
+        reste=getchar();
+        if(verifieEntree(verif,rep,reste)){
+            pb=1;
+        }
+        
+        
+        if ((rep>automate->nombreEtats) || (rep<=0)){
+            printf("\nVeuillez rentrer un nombre entre 1 et %d.\n", automate->nombreEtats);
+            pb=1;
+        }
+
+    }while(pb);
+    automate->etatsFinaux[rep-1] = 0;
 }
 
 
