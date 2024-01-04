@@ -162,10 +162,10 @@ Automate* rendreComplet(Automate* automate) {
                 allocPB=1;
             }
 
-            printf("==%d",nombreEtatsLies);
+            
 
             if (nombreEtatsLies == 0) {  
-                printf("rnetr");
+                
                 automate->matriceTransition[i][j][automate->nombreEtats-1] = 1;
             }
         }
@@ -208,6 +208,7 @@ Automate* rendreComplet(Automate* automate) {
     return automate;
 }
 
+
 // rendreDeterministe qui va permettre de rendre l'automate deterministe en partant de l'automate charge et en lui ajoutant un etat poubelle qui sera lie a tous les etats qui n'ont pas de transition pour un evenement
 Automate* rendreDeterministe(Automate* automate) {
     // Si l'automate est deterministe, on ne fait rien
@@ -218,7 +219,7 @@ Automate* rendreDeterministe(Automate* automate) {
     // partir de automate comme base pour l'automate deterministe
     Automate* automateDeterministe = automate;
 
-    ajouterEtat(automateDeterministe, 'p');
+    //ajouterEtat(automateDeterministe, 'p');
 }
 
 

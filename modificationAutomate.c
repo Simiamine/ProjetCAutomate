@@ -4,34 +4,191 @@
 #include <ctype.h>
 #include "automate.h"
 
+int* ajouterValeur(int* tableau, int taille, int valeur) {
+    // Utiliser realloc pour agrandir la taille du tableau
+    tableau = realloc(tableau, (taille + 1) * sizeof(int));
+
+    // Vérifier si l'allocation de mémoire a réussi
+    if (tableau == NULL) {
+        printf("Erreur d'allocation de mémoire.\n");
+        allocPB=1;
+    }
+
+    // Ajouter la nouvelle valeur à la fin du tableau
+    tableau[taille-1] = valeur;
+
+    // Retourner le tableau mis à jour
+    return tableau;
+}
 
 
+void ajouterEtat(Automate * automate)
+{
+    int pb, init, final;
+                
+    // Demander si l'état est initial
+    do{
+        pb=0;
+        printf("Etat initial ? (1 pour oui, 0 pour non) : ");
+        if(scanf("%d", &init)!=1){
+            printf("\nErreur, veuillez rentrer 1 ou 0.\n");
+            pb=1;
+        }
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+        if((init!=1) & (init!=0)){
+            printf("\nErreur :veuillez rentrer soit 1 ou 0.\n");
+            pb=1;
+        }
 
-void ajouterEtat(Automate* automate, char identifiant) {
-    // Augmenter le nombre d'etats
+    }while(pb);
+    
+    // Demander si l'état est final
+    do{
+        pb=0;
+        printf("Etat final ? (1 pour oui, 0 pour non) : ");
+        if(scanf("%d", &final)!=1){
+            printf("\nErreur, veuillez rentrer 1 ou 0.\n");
+            pb=1;
+        }
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+        if((final!=1) & (final!=0)){
+            printf("\nErreur :veuillez rentrer soit 1 ou 0.\n");
+            pb=1;
+        }
+
+    }while(pb);
+    
+    
     automate->nombreEtats++;
-
-    // Ajouter l'etat a la liste des etats finaux
-    automate->etatsFinaux = realloc(automate->etatsFinaux, automate->nombreEtats * sizeof(int));
-    automate->etatsFinaux[automate->nombreEtats - 1] = 0;
-
-    // Ajouter l'etat a la liste des etats initiaux
-    automate->etatsInitiaux = realloc(automate->etatsInitiaux, automate->nombreEtats * sizeof(int));
-    automate->etatsInitiaux[automate->nombreEtats - 1] = 0;
-
-    // Ajouter l'etat a la matrice de transition
-    automate->matriceTransition = realloc(automate->matriceTransition, automate->nombreEtats * sizeof(int**));
-    automate->matriceTransition[automate->nombreEtats - 1] = malloc(automate->nombreEvent * sizeof(int*));
-    for (int i = 0; i < automate->nombreEvent; i++) {
-        automate->matriceTransition[automate->nombreEtats - 1][i] = calloc(automate->nombreEtats, sizeof(int));
+    int nombreEtat = automate->nombreEtats;
+    
+    if(final)
+    {
+    // le tableau d'etats finaux devient un tableau de taille nombreEtats tel que etatsFinaux[nombreEtats-1]=1
+    automate->etatsFinaux = ajouterValeur(automate->etatsFinaux, nombreEtat, 1);
+    }else{ 
+        automate->etatsFinaux = ajouterValeur(automate->etatsFinaux, nombreEtat, 0);
     }
-    // Ajouter les transitions pour cet etat
-    for (int i = 0; i < automate->nombreEtats; i++) {
-        automate->matriceTransition[i] = realloc(automate->matriceTransition[i], automate->nombreEvent * sizeof(int*));
-        automate->matriceTransition[i][automate->nombreEvent - 1] = calloc(automate->nombreEtats, sizeof(int));
+    
+    if(init)
+    {
+        // le tableau d'etats initiaux devient un tableau de taille nombreEtas tel que etatsInitiaux[nombreEtats-1] = 1
+        automate->etatsInitiaux = ajouterValeur(automate->etatsInitiaux, nombreEtat, 1);
+    }else{
+        automate->etatsInitiaux = ajouterValeur(automate->etatsInitiaux, nombreEtat, 0);
     }
+
+    /*
+    //mettre à jour la matrice de transition
+    automate->matriceTransition = realloc(automate->matriceTransition, nombreEtat * sizeof(int**));
+    automate->matriceTransition[nombreEtat - 1] = malloc(automate->nombreEvent * sizeof(int*));
+    for (int i = 0; i < automate->nombreEvent; i++) 
+    {
+         automate->matriceTransition[nombreEtat - 1][i] = calloc(nombreEtat, sizeof(int));
+    }
+    for (int i = 0; i < automate->nombreEtats; i++) 
+    {
+            automate->matriceTransition[i] = realloc(automate->matriceTransition[i], automate->nombreEvent * sizeof(int*));
+            automate->matriceTransition[i][automate->nombreEvent - 1] = calloc(nombreEtat, sizeof(int));
+	}
+	//return automate;
+    */
+
+    //mettre à jour la matrice de transition
+    // Parcourir chaque etat
+    printf("Rajout des transitions\n");
+    for (int i = 0; i < nombreEtat-1; i++) {
+        // Parcourir chaque evenement
+        for (int j = 0; j < automate->nombreEvent; j++) {
+                       
+            
+            //rajout d'un element dans chaque cellule
+            automate->matriceTransition [i][j]= realloc(automate->matriceTransition[i][j], automate->nombreEtats * sizeof(int));
+            if(!automate->matriceTransition[i][j]){
+                allocPB=1;
+            }
+            
+
+            // Demander s'il y a une transition 
+            int rep;
+            do{
+                pb=0;
+                printf("Etat %d --(%c)--> nouveau etat? (1 pour oui, 0 pour non) : ", i+1,automate->listeEvent[j]);
+                if(scanf("%d", &rep)!=1){
+                    printf("\nErreur, veuillez rentrer 1 ou 0.\n");
+                    pb=1;
+                }
+                int c;
+                while ((c = getchar()) != '\n' && c != EOF);
+                if((rep!=1) & (rep!=0)){
+                    printf("\nErreur :veuillez rentrer soit 1 ou 0.\n");
+                    pb=1;
+                }
+
+            }while(pb);
+            automate->matriceTransition[i][j][automate->nombreEtats-1] = rep;
+            
+            
+        }
+    }
+
+
+    // rajout d'une nouvelle ligne dans la matrice 
+    automate->matriceTransition=realloc(automate->matriceTransition, nombreEtat * sizeof(int**));
+    
+    if(automate->matriceTransition){
+        // rajout des colonnes pour cette ligne 
+        automate->matriceTransition[nombreEtat-1] = malloc(sizeof(int*) * automate->nombreEvent);
+        
+        if(automate->matriceTransition[nombreEtat-1]){
+            for (int j = 0; j < automate->nombreEvent; j++) {
+                // pour chaque colonne rajout des cellules
+                automate->matriceTransition[nombreEtat-1][j] = calloc(nombreEtat, sizeof(int));
+                if(!automate->matriceTransition[nombreEtat-1][j]){
+                    allocPB=1;
+                }
+
+
+                //remplissage des cellules 
+                printf("\nEtat %d --(%c)--> ?\n", nombreEtat, automate->listeEvent[j]);
+
+                // Lire la liste des états liés à l'état i par l'événement j
+                for (int k = 0; k < nombreEtat; k++) {
+                    do{
+                        pb=0;
+                        printf("Etat %d est-il lie ? (1 pour oui, 0 pour non) : ", k+1);
+                        if(scanf("%d", &(automate->matriceTransition[nombreEtat-1][j][k]))!=1){
+                            printf("\nErreur, veuillez rentrer 1 ou 0.\n");
+                            pb=1;
+                            int c;
+                            while ((c = getchar()) != '\n' && c != EOF);
+                        }
+                        
+                        if((automate->matriceTransition[nombreEtat-1][j][k]!=1) & (automate->matriceTransition[nombreEtat-1][j][k]!=0)){
+                            printf("\nErreur :veuillez rentrer soit 1 ou 0.\n");
+                            pb=1;
+                            int c;
+                            while ((c = getchar()) != '\n' && c != EOF);
+                        }
+
+                    }while(pb);
+                }
+            }
+
+        }else{
+            allocPB=1;
+        }
+   
+    }else{
+        allocPB=1;
+    }
+
 
 }
+
+
 
 
 void ajouterEvent(Automate* automate, char event) {
@@ -153,7 +310,7 @@ void ModifierAutomate(Automate* automate) {
             printf("Quel est l'identifiant de l'etat a ajouter ?\n");
             char identifiant; // pas besoin
             scanf(" %c", &identifiant);
-            ajouterEtat(automate, identifiant);
+            //ajouterEtat(automate, identifiant);
             break;
         case 3:
             printf("Quel est l'evenement a ajouter ?\n");

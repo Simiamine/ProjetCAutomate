@@ -24,10 +24,10 @@
         void freeAutomate(Automate* ); // supprime l'automate en cours d'utilisation 
 
         //Modification d'automate
-        void ajouterEtat(Automate* , char ); // PB AVK REALLOC pas besoin de caractere et initialise seulement remplie rien LYLIANNE
+        void ajouterEtat(Automate * automate); // PB AVK REALLOC pas besoin de caractere et initialise seulement remplie rien LYLIANNE
         void ajouterEvent(Automate* , char ); // PB AVK REALLOC idem initialise mais remplie pas 
         int trouverindiceEvent(Automate* , char ); // retourne indice de l'evenement ou -1 sinon  OK 
-        void modifierTransition(Automate* , int , int , char ); // modifie cellule OK 
+        void modifierTransition(Automate* , int , int , char ); // modifie cellule OK  FIO A REFAIRE
         
         void ajouterEtatInitial(Automate* , int ); // verifier que l'etat existe lylianne
         void ajouterEtatFinal(Automate* , int ); // verifier que l'etat existe LYLIANNE
@@ -37,6 +37,9 @@
         //Manipulation de fichier json
         void enregistrerAutomate(Automate* );  // ok
         Automate* chargerAutomate(); // ok
+
+        // fonction utile
+        void demander0ou1(int * , char * );
 
 
         // operation 

@@ -37,7 +37,7 @@ void ajout(Automate* automate){
         scanf("%d", &choix2);
         switch(choix2){
             case 1:
-                printf("Fonction non fini");
+                ajouterEtat(automate);
                 break;
             case 2:
                 printf("Fonction non fini");
