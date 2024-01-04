@@ -1,195 +1,110 @@
 #ifndef AUTOMATE_H
     #define AUTOMATE_H
 
-		extern int allocPB;
-        
-        typedef struct listOfState{ 
-            int state;
-            struct listOfState *next;
-        } listOfState; // linked list of states
+typedef struct {
+    int numStates;           // Number of states in the automaton
+    int numEvents;      // Number of events in the automaton
+    int*** transitionMatrix;  // Dynamic matrix containing transitions: transitionMatrix[state][event][linkedStates] with linked state = 1 if linked and 0 otherwise
+    int* finalStates;          // Integer array of size numStates: 1 if final and 0 otherwise
+    int* initialStates;           // Integer array of size numStates: 1 if initial and 0 otherwise
+    char* eventList; // List of events: eventList[event] = letter of the event at the event index
+} Automaton;
 
-        typedef struct listOfEvents{
-            char event;
-            struct listOfEvents *next;
-        } listOfEvents; // linked list of events
-        
-        
-        
-        
-        typedef struct Automaton{
-            int numberOfStates;       // Number of states in the automaton
-            int numberOfEvents;       // Number of events in the automaton
-            listOfState*** Matrix;  // Dynamic matrix line=states and colomn=events
-            listOfState* finalStates;         // list of final states PK NE PAS METTRE LISTOFSTATE ICI PUISQUE QUE LE TAILLE DE CETTE LISTE PEUT VARIER
-            listOfState* initialStates;  // list of initial states MEME REMARQUE ICI
-            listOfEvents* events; // list of events
-            
-            struct Automaton* nextAutomaton; // A VOIR AVK LES AUTRES 
-        } Automaton;
+	void deleteState(Automaton* automaton, int state) {
+    // Check if the state is valid
+    if (state < 0 || state >= automaton->numStates) {
+        printf("Invalid state.\n");
+        return;
+    }
 
-        
+    // Remove all transitions to the state to be deleted
+    for (int i = 0; i < automaton->numStates; i++) {
+        for (int j = 0; j < automaton->numEvents; j++) {
+            automaton->transitionMatrix[i][j][state] = 0;
+        }
+    }
 
-        //states Manipulation
-        listOfState* createState(int);
-        void addState(listOfState**, listOfState*);
-        void deleteState(listOfState*, int );
-        listOfState* searchState(listOfState*, int);
-        void freeState(listOfState*);
-        void displayStates(listOfState* );
-        
+    // Decrease the number of states
+    automaton->numStates--;
 
+    // Shift the initial and final states
+    for (int i = state; i < automaton->numStates; i++) {
+        automaton->initialStates[i] = automaton->initialStates[i + 1];
+        automaton->finalStates[i] = automaton->finalStates[i + 1];
+    }
 
-        //events Manipulation
-        listOfEvents* createEvent(char);
-        void addEvent(listOfEvents**, listOfEvents*);
-        void deleteEvent(listOfEvents*, char );
-        listOfEvents* searchEvent(listOfEvents*, char);
-        void freeEvent(listOfEvents*);
-        void displayEvents(listOfEvents* );       
-
-
-
-
-        // Automaton creation
-		void inputAutomaton(Automaton* );
-        Automaton* createAutomaton();
-        void initiateAutomaton(Automaton* );
-        void navigateAutomaton(Automaton);
-        listOfState enterCellsMatrix(int, int); 
-        void interpreteMatrix(Automaton);
-        void initiateInitialStates(Automaton*);
-        void initiateEvents(Automaton* );
-        void initiateFinalState(Automaton *);
-
-        //Automaton in files
-        void serialization(Automaton);
-        void deserialization(Automaton);
-
-        //Modification in Automaton
-        void changeFinalStates(Automaton* automaton) {
-            int state, isFinal;
-            printf("Enter the state number to change its final status (0 to stop): ");
-            while (1) {
-                scanf("%d", &state);
-                if (state == 0) break;
-                printf("Is state %d a final state? (1 for yes, 0 for no): ", state);
-                scanf("%d", &isFinal);
-                listOfState* stateNode = searchState(automaton->finalStates, state);
-                if (stateNode != NULL) {
-                    stateNode->state = isFinal;
-                } else {
-                    if (isFinal) {
-                        listOfState* newState = createState(state);
-                        addState(&(automaton->finalStates), newState);
-                    }
-                }
+    // Shift the transition matrix
+    for (int i = state; i < automaton->numStates; i++) {
+        for (int j = 0; j < automaton->numEvents; j++) {
+            for (int k = state; k < automaton->numStates; k++) {
+                automaton->transitionMatrix[i][j][k] = automaton->transitionMatrix[i][j][k + 1];
             }
+            automaton->transitionMatrix[i][j] = realloc(automaton->transitionMatrix[i][j], automaton->numStates * sizeof(int));
         }
-        void changeInitialStates(Automaton* automaton) {
-            int state, isInitial;
-            printf("Enter the state number to change its initial status (0 to stop): ");
-            while (1) {
-                scanf("%d", &state);
-                if (state == 0) break;
-                printf("Is state %d an initial state? (1 for yes, 0 for no): ", state);
-                scanf("%d", &isInitial);
-                listOfState* stateNode = searchState(automaton->initialStates, state);
-                if (stateNode != NULL) {
-                    stateNode->state = isInitial;
-                } else {
-                    if (isInitial) {
-                        listOfState* newState = createState(state);
-                        addState(&(automaton->initialStates), newState);
-                    }
-                }
-            }
+        free(automaton->transitionMatrix[i]);
+        automaton->transitionMatrix[i] = automaton->transitionMatrix[i + 1];
+        automaton->transitionMatrix[i + 1] = NULL;
+    }
+
+    // Reallocate the initial and final states
+    automaton->initialStates = realloc(automaton->initialStates, automaton->numStates * sizeof(int));
+    automaton->finalStates = realloc(automaton->finalStates, automaton->numStates * sizeof(int));
+
+    // Reallocate the transition matrix
+    automaton->transitionMatrix = realloc(automaton->transitionMatrix, automaton->numStates * sizeof(int**));
+}
+
+void deleteEvent(Automaton* automaton, int event) {
+    // Check if the event is valid
+    if (event < 0 || event >= automaton->numEvents) {
+        printf("Invalid event.\n");
+        return;
+    }
+
+    // Shift the event list
+    for (int i = event; i < automaton->numEvents - 1; i++) {
+        automaton->eventList[i] = automaton->eventList[i + 1];
+    }
+
+    // Shift the transition matrix
+    for (int i = 0; i < automaton->numStates; i++) {
+        for (int j = event; j < automaton->numEvents - 1; j++) {
+            free(automaton->transitionMatrix[i][j]);
+            automaton->transitionMatrix[i][j] = automaton->transitionMatrix[i][j + 1];
         }
-        void changeCells(Automaton* automaton) {
-            int fromState, eventIndex, toState, newValue;
-            printf("Enter the state, event index, target state, and new value (0 to stop): ");
-            while (1) {
-                scanf("%d %d %d %d", &fromState, &eventIndex, &toState, &newValue);
-                if (fromState == 0) break;
-                if (fromState < automaton->numberOfStates && eventIndex < automaton->numberOfEvents) {
-                    automaton->Matrix[fromState][eventIndex]->state = newValue;
-                } else {
-                    printf("Invalid indices!\n");
-                }
-            }
+        automaton->transitionMatrix[i] = realloc(automaton->transitionMatrix[i], (automaton->numEvents - 1) * sizeof(int*));
+    }
+
+    // Decrease the number of events
+    automaton->numEvents--;
+
+    // Reallocate the event list
+    automaton->eventList = realloc(automaton->eventList, automaton->numEvents * sizeof(char));
+}
+
+void addEvent(Automaton* automaton, char newEvent) {
+    // Check if the event already exists
+    for (int i = 0; i < automaton->numEvents; i++) {
+        if (automaton->eventList[i] == newEvent) {
+            printf("Event already exists.\n");
+            return;
         }
+    }
 
-        //Creation in Automaton
-        void createStateInAutomaton(Automaton* automaton) {
-            int stateNumber;
-            printf("Enter new state number: ");
-            scanf("%d", &stateNumber);
+    // Increase the number of events
+    automaton->numEvents++;
 
-            listOfState* newState = createState(stateNumber);
-            addState(&(automaton->numberOfStates), newState);
-        }
-        void createEventInAutomaton(Automaton* automaton) {
-            char eventChar;
-            printf("Enter new event character: ");
-            scanf(" %c", &eventChar);
+    // Reallocate the event list and add the new event
+    automaton->eventList = realloc(automaton->eventList, automaton->numEvents * sizeof(char));
+    automaton->eventList[automaton->numEvents - 1] = newEvent;
 
-            listOfEvents* newEvent = createEvent(eventChar);
-            addEvent(&(automaton->events), newEvent);
-        }
-
-        //Suppression in Automaton
-        void deleteAutomaton(Automaton* automaton) {
-            if (!automaton) return;
-
-            // Free the matrix of transitions
-            for (int i = 0; i < automaton->numberOfStates; ++i) {
-                for (int j = 0; j < automaton->numberOfEvents; ++j) {
-                    freeState(automaton->Matrix[i][j]);
-                }
-                free(automaton->Matrix[i]);
-            }
-            free(automaton->Matrix);
-
-            // Free other elements
-            freeState(automaton->finalStates);
-            freeState(automaton->initialStates);
-            freeEvent(automaton->events);
-
-            free(automaton);
-        }
-        void deleteStateInAutomaton(Automaton* automaton) {
-            int stateNumber;
-            printf("Enter state number to delete: ");
-            scanf("%d", &stateNumber);
-
-            deleteState(automaton->finalStates, stateNumber);
-            deleteState(automaton->initialStates, stateNumber);
-
-            // Remove from matrix
-            for (int i = 0; i < automaton->numberOfEvents; ++i) {
-                deleteState(automaton->Matrix[stateNumber][i], stateNumber);
-            }
-        }
-        void deleteEventInAutomaton(Automaton* automaton) {
-            char eventChar;
-            printf("Enter event character to delete: ");
-            scanf(" %c", &eventChar);
-
-            deleteEvent(automaton->events, eventChar);
-
-            // Remove from matrix
-            for (int i = 0; i < automaton->numberOfStates; ++i) {
-                for (int j = 0; j < automaton->numberOfEvents; ++j) {
-                    if (automaton->events[j].event == eventChar) {
-                        freeState(automaton->Matrix[i][j]);
-                        automaton->Matrix[i][j] = NULL;  // Set to NULL to avoid dangling pointers
-                    }
-                }
-            }
-        }
-
-
-
-        
+    // Reallocate the transition matrix
+    automaton->transitionMatrix = realloc(automaton->transitionMatrix, automaton->numStates * sizeof(int**));
+    for (int i = 0; i < automaton->numStates; i++) {
+        automaton->transitionMatrix[i] = realloc(automaton->transitionMatrix[i], automaton->numEvents * sizeof(int*));
+        automaton->transitionMatrix[i][automaton->numEvents - 1] = calloc(automaton->numStates, sizeof(int));
+    }
+}
 
 
 
