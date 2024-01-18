@@ -1,3 +1,27 @@
+/**
+ * FILEPATH: /h:/Documents/CYTech/ING1/Projet C/ProjetCAutomate/Main.c
+ * 
+ * Ce fichier contient le code principal du programme qui permet de manipuler des automates finis.
+ * Il comprend les fonctions pour afficher les menus, ajouter et supprimer des éléments d'un automate,
+ * charger et enregistrer un automate à partir d'un fichier, vérifier des propriétés d'un automate,
+ * effectuer des opérations sur un automate, et afficher un automate.
+ * 
+ * Les fonctions principales sont :
+ * - afficheMenu() : Affiche le menu principal du programme.
+ * - afficheMenuAjouter() : Affiche le menu d'ajout d'éléments à un automate.
+ * - ajout() : Exécute les fonctions d'ajout en fonction du choix de l'utilisateur.
+ * - afficheMenuSupprimer() : Affiche le menu de suppression d'éléments d'un automate.
+ * - supprimer() : Exécute les fonctions de suppression en fonction du choix de l'utilisateur.
+ * - afficheMenuMCD() : Affiche le menu des mots, complet et déterministe.
+ * - mcd() : Exécute les fonctions des mots, complet et déterministe en fonction du choix de l'utilisateur.
+ * - afficheMenuOper() : Affiche le menu des opérations sur un automate.
+ * - main() : Fonction principale du programme.
+ * 
+ * Les autres fonctions incluses dans le fichier sont des fonctions utilitaires pour manipuler les automates.
+ * 
+ * Auteur : Amine, Fiorina, Younes, Lyliane
+ * Date : 01/09/2023
+ **/
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
