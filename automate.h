@@ -55,7 +55,8 @@
         int estDeterministe(Automate* automate); 
         int estComplet(Automate* automate); 
         Automate* rendreDeterministe(Automate* automate); // En cours
-        Automate* rendreComplet(Automate* automate); 
+        Automate* rendreComplet(Automate* automate);
+	Automate* AutomateMirroir(Automate* automate);
         
 
         
