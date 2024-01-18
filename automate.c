@@ -1,3 +1,118 @@
+/**
+ * Structure representant un automate.
+ * Contient les informations sur le nombre d'états, le nombre d'événements,
+ * la matrice de transition, les états finaux et initiaux, et la liste des événements.
+ */
+typedef struct {
+    int nombreEtats;           // Nombre d'états dans l'automate
+    int nombreEvent;      // Nombre d'événements dans l'automate
+    int*** matriceTransition;  // Matrice dynamique contenant les transitions : matriceTransition[etat][event][etatslies] avec etat lies = 1 si lié et 0 sinon
+    int* etatsFinaux;          // Tableau d'entiers de taille nbEtats : 1 si final et 0 sinon
+    int* etatsInitiaux;           //  Tableau d'entiers de taille nbEtats : 1 si initial et 0 sinon
+    char* listeEvent; // Liste des événements : listeEvent[event] = lettre de l'événement à l'indice event
+} Automate;
+
+/**
+ * Initialise un automate avec le nombre d'états et le nombre d'événements donnés.
+ * Alloue la mémoire nécessaire et initialise les différentes structures de l'automate.
+ *
+ * @param nombreEtats Le nombre d'états de l'automate.
+ * @param nombreEvent Le nombre d'événements de l'automate.
+ * @return Un pointeur vers l'automate initialisé.
+ */
+Automate* initAutomate(int nombreEtats, int nombreEvent);
+
+/**
+ * Remplit un automate avec les informations fournies par l'utilisateur.
+ * Demande à l'utilisateur de fournir la liste des événements, les états initiaux et finaux,
+ * et les transitions entre les états pour chaque événement.
+ *
+ * @param automate L'automate à remplir.
+ * @return L'automate rempli.
+ */
+Automate* remplirAEF(Automate* automate);
+
+/**
+ * Affiche les informations d'un automate.
+ * Affiche la liste des événements, les états initiaux et finaux,
+ * et la matrice de transition de l'automate.
+ *
+ * @param automate L'automate à afficher.
+ */
+void afficherAEF(Automate* automate);
+
+/**
+ * Libère la mémoire allouée pour un automate.
+ *
+ * @param automate L'automate à libérer.
+ */
+void freeAutomate(Automate* automate);
+
+/**
+ * Ajoute un nouvel état à l'automate.
+ * Augmente le nombre d'états, et met à jour les structures de l'automate en conséquence.
+ *
+ * @param automate L'automate auquel ajouter l'état.
+ * @param identifiant L'identifiant de l'état à ajouter.
+ */
+void ajouterEtat(Automate* automate, char identifiant);
+
+/**
+ * Ajoute un nouvel événement à l'automate.
+ * Augmente le nombre d'événements, et met à jour les structures de l'automate en conséquence.
+ *
+ * @param automate L'automate auquel ajouter l'événement.
+ * @param event L'événement à ajouter.
+ */
+void ajouterEvent(Automate* automate, char event);
+
+/**
+ * Modifie une transition de l'automate.
+ * Inverse la valeur de la transition entre l'état de départ et l'état d'arrivée pour l'événement donné.
+ *
+ * @param automate L'automate dans lequel modifier la transition.
+ * @param etatDepart L'état de départ de la transition.
+ * @param etatArrivee L'état d'arrivée de la transition.
+ * @param event L'événement de la transition.
+ */
+void modifierTransition(Automate* automate, int etatDepart, int etatArrivee, char event);
+
+/**
+ * Vérifie si une transition existe dans l'automate.
+ * Affiche un message indiquant si la transition existe ou non.
+ *
+ * @param automate L'automate dans lequel vérifier la transition.
+ * @param etatDepart L'état de départ de la transition.
+ * @param etatArrivee L'état d'arrivée de la transition.
+ * @param event L'événement de la transition.
+ */
+void transition(Automate* automate, int etatDepart, int etatArrivee, char event);
+
+/**
+ * Ajoute un état initial à l'automate.
+ * Marque l'état donné comme étant un état initial.
+ *
+ * @param automate L'automate auquel ajouter l'état initial.
+ * @param etat L'état initial à ajouter.
+ */
+void ajouterEtatInitial(Automate* automate, int etat);
+
+/**
+ * Ajoute un état final à l'automate.
+ * Marque l'état donné comme étant un état final.
+ *
+ * @param automate L'automate auquel ajouter l'état final.
+ * @param etat L'état final à ajouter.
+ */
+void ajouterEtatFinal(Automate* automate, int etat);
+
+/**
+ * Affiche graphiquement l'automate en utilisant la librairie Graphviz.
+ * Génère un fichier .dot représentant l'automate, puis le convertit en image .png et l'affiche.
+ *
+ * @param automate L'automate à afficher.
+ */
+void affichagegraphique(Automate* automate);
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
