@@ -223,6 +223,73 @@ Automate* rendreComplet(Automate* automate) {
 }
 
 
+/**
+ * Initialise l'automate deterministe à partir d'un automate non deterministe
+ * input : un automate 
+ * output : automate 
+**/
+Automate* initAutomateDeter(Automate* automate) {
+
+    // partir de automate comme base pour l'automate deterministe
+    Automate* automateDeterministe = automate;
+    automateDeterministe->nombreEtats=automate->nombreEtats;
+    automateDeterministe->nombreEvent=automate->nombreEvent;
+    automateDeterministe->etatsFinaux=automate->etatsFinaux;
+    automateDeterministe->listeEvent=automate->listeEvent;
+    
+
+    // un seul état initial
+    int nbInitiaux = 0;
+    int etatI = NULL;
+    for (int i=0; i<automate->nombreEtats;i++){
+        if(automate->etatsInitiaux[i]){
+            etatI=i;
+            nbInitiaux++;
+        }
+    }
+
+    
+    if(nbInitiaux!=1){
+        printf("\nVous avez aucun ou plusieurs etat initiaux.");
+        int verif;
+        int reste;
+        
+        do {
+            printf("Quelle est l'etat initial : ");
+            verif = scanf("%d", &etatI);
+            reste = getchar();
+
+        } while (verifieEntree(verif, etatI, reste));
+    }
+
+    automateDeterministe->etatsInitiaux = calloc(automateDeterministe->nombreEtats, sizeof(int));
+    automateDeterministe->etatsInitiaux[etatI]=1;
+
+    return automateDeterministe;
+
+}
+
+
+int * etatArrive(Automate * automate, int* tabEtat, int nbElem){
+    int* arrive  = malloc(sizeof(int*)* automate->nombreEtats) ;
+    if(arrive){
+        int nbEvent = automate->nombreEvent;
+        for ( int i=0;i<nbElem; i++){
+            int etat  = tabEtat[i];
+            for(int event = 0; event<nbEvent;event++){
+                for(int k =0;k<automate->nombreEtats;k++){
+                    if(automate->matriceTransition[etat][event][k]){
+                        
+                    }
+                }
+                
+            }
+            
+        }
+    }
+    
+}
+
 // rendreDeterministe qui va permettre de rendre l'automate deterministe en partant de l'automate charge et en lui ajoutant un etat poubelle qui sera lie a tous les etats qui n'ont pas de transition pour un evenement
 /**
  * permet de rendre deterministe l'automate 
@@ -232,13 +299,51 @@ Automate* rendreComplet(Automate* automate) {
 Automate* rendreDeterministe(Automate* automate) {
     // Si l'automate est deterministe, on ne fait rien
     if (estDeterministe(automate)) {
+        printf("L'automate est deja deterministe.");
         return automate;
     }
 
-    // partir de automate comme base pour l'automate deterministe
-    Automate* automateDeterministe = automate;
+    // recupere les informations de l'automate de base 
+    Automate* deter = initAutomateDeter(automate);
+    int etatI = NULL;
+    for (int i = 0; i<deter->nombreEtats;i++){
+        if(deter->etatsInitiaux[i] ){
+            etatI = i;
+            i=deter->nombreEtats;
+        }
+    }
 
-    //ajouterEtat(automateDeterministe, 'p');
+
+
+     
+    int** tabEtat= malloc(sizeof(int**));
+    
+    if(tabEtat){
+        tabEtat[0] = malloc(sizeof(int*));
+        if(tabEtat[0]){
+            tabEtat[0][0]= etatI;
+        }else{
+            allocPB=1;
+        }
+
+        
+        
+    }allocPB=1;
+
+    
+    
+
+
+
+
+    
+    
+    
+
+
+
+
+    freeAutomate(automate);
 }
 
 
