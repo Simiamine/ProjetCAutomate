@@ -138,6 +138,8 @@ void supprimer(Automate* automate){
 
 }
 
+
+
 /**
  * Affiche le menu des mots, complet et deterministe
  * input : rien 
@@ -228,6 +230,51 @@ void afficheMenuOper(){
     printf("\n2\tMiroir"); 
     printf("\n3\tConcatenation");
     printf("\n4\tProduit");
+    printf("\n0\tRevenir en arriere\n");
+}
+
+void operationAuto(Automate* automate){
+    int choix2;
+    Automate* automate1 = NULL;
+    Automate* automate2 = NULL;
+    do{                    
+        choix2=100;
+        afficheMenuOper();
+        printf("\nChoix : ");
+        scanf("%d", &choix2);
+        switch(choix2){
+            case 1:
+                if (automate != NULL) {
+                    afficherAEF(complementAEF(automate));
+                }else{
+                    printf("Erreur aucun AEF est en cours d'utilisation");
+                }
+                break;
+            case 2:
+                if (automate != NULL) {
+                    afficherAEF(mirroirAEF(automate));
+                }else{
+                    printf("Erreur aucun AEF est en cours d'utilisation");
+                }
+                break;
+            case 3:
+                printf("Fonction non fini");
+                break;
+            case 4:
+                printf("Fonction non fini");
+                break;
+            case 0 :
+                break;
+            default:
+                printf("\nChoix incorrect\n");
+                int c;
+                while ((c = getchar()) != '\n' && c != EOF);
+        }
+        
+
+
+    }while((choix2!=0)&(!allocPB));
+
 }
 
 
@@ -310,9 +357,9 @@ int main(){
                 break;
 
             case 6:
-                printf("\n\tOpper\n");
+                operationAuto(automate);
                 break;
-            // ANCIEN A SUPP 
+             
             case 7:
                 if (automate != NULL) {
                     afficherAEF(automate);

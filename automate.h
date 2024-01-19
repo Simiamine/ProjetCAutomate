@@ -56,6 +56,10 @@
         int estComplet(Automate* automate); 
         Automate* rendreDeterministe(Automate* automate); // En cours
         Automate* rendreComplet(Automate* automate); 
+
+        //operation
+        Automate* complementAEF(Automate* );
+        Automate* mirroirAEF(Automate* );
         
 
         
