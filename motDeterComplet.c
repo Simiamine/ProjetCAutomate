@@ -295,16 +295,30 @@ Automate* initAutomateDeter(Automate* automate) {
 
 */
 
+
+int Existe(int * tab, int taille,int a)
+{
+    int i;
+    for(i=0;i<taille;i++)
+    {
+        if(tab[i]==a)
+            return 1;
+        else
+            return 0;
+    }
+}
 /**
  * retourne liste des etat d'arrive pour quelques etats contenu dans un tableau 
  * input : un automate, liste des etats, nombre d'etat
  * output : tableau des etat d'arrivé de taille nombre etat 
 **/
+
+
 int * etatArrive(Automate * automate, int* tabEtat, int nbElem, int event){
     int* arrive  = malloc(sizeof(int*)* automate->nombreEtats) ;
     if(arrive){
         for( int a=0;a<automate->nombreEtats;a++){
-            arrive[a]=NULL;
+            arrive[a]=-1;
         }
 
         int nbArrive = 0;
@@ -312,9 +326,11 @@ int * etatArrive(Automate * automate, int* tabEtat, int nbElem, int event){
         for ( int i=0;i<nbElem; i++){
             int etat  = tabEtat[i];
             
+            
             for(int k =0;k<automate->nombreEtats;k++){
                 if(automate->matriceTransition[etat][event][k]){
                     arrive[nbArrive] = k;
+                    printf("===%d", k);
                     nbArrive++;
                 }
             }
@@ -325,7 +341,7 @@ int * etatArrive(Automate * automate, int* tabEtat, int nbElem, int event){
     }else{
         allocPB = 1 ;
     }
-
+    
     return arrive;
     
 }
@@ -333,18 +349,24 @@ int * etatArrive(Automate * automate, int* tabEtat, int nbElem, int event){
 // fonction qui prend en entrÃ©e une matrice 2d et un tableau d'entiers et qui renvoie un booleen si ce tableau est une ligne de la matrice ou pas
 int estLigne(int** matrice, int* ligne, int nombreLignes, int nombreColonnes) {
     // Parcourir chaque ligne de la matrice
+    int res = 1;
     for (int i = 0; i < nombreLignes; i++) {
+        res=1;
         // Parcourir chaque colonne de la matrice
         for (int j = 0; j < nombreColonnes; j++) {
             // Si la valeur de la matrice est differente de la valeur de la ligne, la ligne n'est pas dans la matrice
             if (matrice[i][j] != ligne[j]) {
-                return 0;
+                res=0;
             }
+        }
+
+        if(res){
+            return res;
         }
     }
 
     // Si la ligne a passe tous les tests, la ligne est dans la matrice
-    return 1;
+    return 0;
 }
 
 // rendreDeterministe qui va permettre de rendre l'automate deterministe en partant de l'automate charge et en lui ajoutant un etat poubelle qui sera lie a tous les etats qui n'ont pas de transition pour un evenement
@@ -353,15 +375,18 @@ int estLigne(int** matrice, int* ligne, int nombreLignes, int nombreColonnes) {
  * input : un automate 
  * output : automate deterministe
 **/
+
 Automate* rendreDeterministe(Automate* automate) {
     // Si l'automate est deterministe, on ne fait rien
     if (estDeterministe(automate)) {
         printf("L'automate est deja deterministe.");
         return automate;
     }
+    
 
     // recupere les informations de l'automate de base 
     Automate* deter = initAutomate(1,automate->nombreEvent);
+    deter->etatsInitiaux[0]=1;
     
     // etat initial
     int * etatI=malloc(sizeof(int*)*automate->nombreEtats);
@@ -402,7 +427,7 @@ Automate* rendreDeterministe(Automate* automate) {
     
     
      
-
+    
 
     int** tabEtat= malloc(sizeof(int**)); // liste des nvx etat composé d'un ou plusieurs ancien etat
     
@@ -411,57 +436,51 @@ Automate* rendreDeterministe(Automate* automate) {
         
         //intialisation du tableau
         if(tabEtat[0]){
-            for(int a=0;a<automate->nombreEtats;a++){
-                tabEtat[0][a]=NULL;
-            }
+            
             tabEtat[0]= etatI;
             int nbElem = 1;
 
             for(int i = 0; i<nbElem;i++){
+                
                 for(int event = 0; event<automate->nombreEvent;event++){
+                    
                     int* nvxTab = etatArrive(automate,tabEtat[i],nbElem,event);
-                    if(nvxTab[0]!=NULL){// si nous n'avons pas un tableau vide
+                    if(nvxTab[0]!=-1){// si nous n'avons pas un tableau vide
                         if(!estLigne(tabEtat,nvxTab,nbElem,automate->nombreEtats)){// si le tableau est absent dans tabEtat
                             
                             tabEtat = realloc(tabEtat, (nbElem + 1 )*sizeof(int**) ); // rajoute un element dans la tableau de liste des etats
                             tabEtat[nbElem]=nvxTab;
                             nbElem++;
 
+                            
+
+
+                            
+
+
+                            
+
+                            
                             //rajout de letat parmis les anciens
-                            for (int i = 0; i < nombreEtat-1; i++) {
+                            for (int i = 0; i < nbElem-1; i++) {
                                 // Parcourir chaque evenement
-                                for (int j = 0; j < automate->nombreEvent; j++) {
+                                for (int j = 0; j < deter->nombreEvent; j++) {
                                             
                                     
                                     //rajout d'un element dans chaque cellule
-                                    automate->matriceTransition [i][j]= realloc(automate->matriceTransition[i][j], automate->nombreEtats * sizeof(int));
-                                    if(!automate->matriceTransition[i][j]){
+                                    deter->matriceTransition [i][j]= realloc(deter->matriceTransition[i][j], deter->nombreEtats * sizeof(int));
+                                    if(!deter->matriceTransition[i][j]){
                                         allocPB=1;
                                     }
+                                     
                                     
-
-                                    // Demander s'il y a une transition 
-                                    int rep;
-                                    do{
-                                        pb=0;
-                                        printf("Etat %d --(%c)--> nouveau etat? (1 pour oui, 0 pour non) : ", i+1,automate->listeEvent[j]);
-                                        if(scanf("%d", &rep)!=1){
-                                            printf("\nErreur, veuillez rentrer 1 ou 0.\n");
-                                            pb=1;
-                                        }
-                                        int c;
-                                        while ((c = getchar()) != '\n' && c != EOF);
-                                        if((rep!=1) & (rep!=0)){
-                                            printf("\nErreur :veuillez rentrer soit 1 ou 0.\n");
-                                            pb=1;
-                                        }
-
-                                    }while(pb);
-                                    automate->matriceTransition[i][j][automate->nombreEtats-1] = rep;
+                                    deter->matriceTransition[i][j][deter->nombreEtats-1] = 0;
                                     
                                     
                                 }
                             }
+                            deter->matriceTransition[i][event][nbElem-1]=1;
+
 
 
                             
@@ -474,6 +493,32 @@ Automate* rendreDeterministe(Automate* automate) {
                     }  
                 }
                  
+            }
+
+
+            // rajout d'une nouvelle ligne dans la matrice 
+            deter->matriceTransition=realloc(deter->matriceTransition, nbElem * sizeof(int**));
+            
+            if(deter->matriceTransition){
+                // rajout des colonnes pour cette ligne 
+                deter->matriceTransition[nbElem-1] = malloc(sizeof(int*) * deter->nombreEvent);
+                
+                if(deter->matriceTransition[nbElem-1]){
+                    for (int j = 0; j < deter->nombreEvent; j++) {
+                        // pour chaque colonne rajout des cellules
+                        deter->matriceTransition[nbElem-1][j] = calloc(nbElem, sizeof(int));
+                        if(!deter->matriceTransition[nbElem-1][j]){
+                            allocPB=1;
+                        }
+
+                    }
+
+                }else{
+                    allocPB=1;
+                }
+        
+            }else{
+                allocPB=1;
             }
             deter->nombreEtats=nbElem;
         }else{
@@ -489,17 +534,124 @@ Automate* rendreDeterministe(Automate* automate) {
     freeAutomate(automate);
 }
 
-
-
-
-
-
-
-
-
-
-
 /*
+
+
+int creerNouvelEtat(int ***matrice, int taille) {
+    *matrice = realloc(*matrice, (taille + 1) * sizeof(int *));
+    (*matrice)[taille] = calloc(taille, sizeof(int));
+    return taille;
+}
+
+int estDansListe(int **liste, int *ensemble, int tailleListe, int tailleEnsemble) {
+    for (int i = 0; i < tailleListe; i++) {
+        if (memcmp(liste[i], ensemble, tailleEnsemble * sizeof(int)) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+Automate rendreDeterministe(Automate *afn) {
+    Automate afd;
+    afd.nombreEtats = 0;
+    afd.nombreEvent = afn->nombreEvent;
+    afd.etatsFinaux = NULL;
+    afd.etatsInitiaux = NULL;
+    afd.listeEvent = afn->listeEvent;
+    
+
+    int **nouveauxEtats = NULL;
+    int tailleNouveauxEtats = 0;
+
+    afd.matriceTransition = calloc(1, sizeof(int *));
+    afd.matriceTransition[0] = calloc(afn->nombreEvent, sizeof(int));
+
+    int *etatInitialAFD = calloc(afn->nombreEtats, sizeof(int));
+    for (int i = 0; i < afn->nombreEtats; i++) {
+        if (afn->etatsInitiaux[i] == 1) {
+            etatInitialAFD[i] = 1;
+        }
+    }
+
+    int indiceEtatInitial = creerNouvelEtat(&nouveauxEtats, tailleNouveauxEtats);
+    memcpy(nouveauxEtats[indiceEtatInitial], etatInitialAFD, afn->nombreEtats * sizeof(int));
+    tailleNouveauxEtats++;
+
+    
+
+    int indiceFile = 0;
+    int tailleFile = 1;
+    int **file = malloc(tailleFile * sizeof(int *));
+    file[indiceFile] = etatInitialAFD;
+
+    while (indiceFile < tailleFile) {
+        int *etatCourantAFD = file[indiceFile];
+        indiceFile++;
+
+        for (int event = 0; event < afn->nombreEvent; event++) {
+            int *nouvelEtatAFD = calloc(afn->nombreEtats, sizeof(int));
+
+            for (int etatAFN = 0; etatAFN < afn->nombreEtats; etatAFN++) {
+                if (etatCourantAFD[etatAFN] == 1) {
+                    for (int etatSuivantAFN = 0; etatSuivantAFN < afn->nombreEtats; etatSuivantAFN++) {
+                        if (afn->matriceTransition[etatAFN][event][etatSuivantAFN] == 1) {
+                            nouvelEtatAFD[etatSuivantAFN] = 1;
+                        }
+                    }
+                }
+            }
+
+            
+
+            int indiceNouvelEtat = estDansListe(nouveauxEtats, nouvelEtatAFD, tailleNouveauxEtats, afn->nombreEtats);
+
+            if (indiceNouvelEtat == -1) {
+                indiceNouvelEtat = creerNouvelEtat(&nouveauxEtats, tailleNouveauxEtats);
+                memcpy(nouveauxEtats[indiceNouvelEtat], nouvelEtatAFD, afn->nombreEtats * sizeof(int));
+                tailleNouveauxEtats++;
+
+                if (indiceFile < tailleFile) {
+                    file[indiceFile] = nouvelEtatAFD;
+                    indiceFile++;
+                } else {
+                    tailleFile++;
+                    file = realloc(file, tailleFile * sizeof(int *));
+                    file[indiceFile] = nouvelEtatAFD;
+                    indiceFile++;
+                }
+            }
+
+            
+
+            afd.matriceTransition[indiceEtatInitial][event] = &indiceNouvelEtat;
+
+            for (int etatAFN = 0; etatAFN < afn->nombreEtats; etatAFN++) {
+                printf("\nrentre");
+                if (nouvelEtatAFD[etatAFN] == 1 && afn->etatsFinaux[etatAFN] == 1) {
+                    afd.etatsFinaux[indiceNouvelEtat] = 1;
+                    printf("dtfgh");
+                    break;
+                }
+            }
+
+            
+        }
+    }
+
+    
+
+    free(file);
+
+    return afd;
+}
+
+
+
+
+
+
+
 
 //Amine
 

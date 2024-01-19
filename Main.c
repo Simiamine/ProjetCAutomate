@@ -198,7 +198,7 @@ void mcd(Automate* automate){
                 }
                 break;
             case 4:
-                printf("Fonction non fini");
+                automate=rendreDeterministe(automate);
                 break;
             case 5:
                 rendreComplet(automate);
