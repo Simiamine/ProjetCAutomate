@@ -228,11 +228,12 @@ Automate* rendreComplet(Automate* automate) {
  * input : un automate 
  * output : automate 
 **/
+/*
 Automate* initAutomateDeter(Automate* automate) {
 
     // partir de automate comme base pour l'automate deterministe
     Automate* automateDeterministe = automate;
-    automateDeterministe->nombreEtats=automate->nombreEtats;
+    automateDeterministe->nombreEtats=automate->nombreEtats; 
     automateDeterministe->nombreEvent=automate->nombreEvent;
     automateDeterministe->etatsFinaux=automate->etatsFinaux;
     automateDeterministe->listeEvent=automate->listeEvent;
@@ -265,29 +266,85 @@ Automate* initAutomateDeter(Automate* automate) {
     automateDeterministe->etatsInitiaux = calloc(automateDeterministe->nombreEtats, sizeof(int));
     automateDeterministe->etatsInitiaux[etatI]=1;
 
+    
+
+    // Allouer et initialiser la matrice de transition juste pour un etat
+        automate->matriceTransition = malloc(sizeof(int**));
+        if(automate->matriceTransition){
+            for (int i = 0; i < automateDeterministe->nombreEtats; i++) {
+            automate->matriceTransition[i] = malloc(sizeof(int*) * automateDeterministe->nombreEvent);
+            if(automate->matriceTransition[i]){
+                for (int j = 0; j < automateDeterministe->nombreEvent; j++) {
+                    automate->matriceTransition[i][j] = calloc(1, sizeof(int));
+                    if(!automate->matriceTransition[i][j]){
+                        allocPB=1;
+                    }
+                }
+            }else{
+                allocPB=1;
+            }
+                
+            }
+        }else{
+            allocPB=1;
+        }
+    
     return automateDeterministe;
 
 }
 
+*/
 
-int * etatArrive(Automate * automate, int* tabEtat, int nbElem){
+/**
+ * retourne liste des etat d'arrive pour quelques etats contenu dans un tableau 
+ * input : un automate, liste des etats, nombre d'etat
+ * output : tableau des etat d'arrivé de taille nombre etat 
+**/
+int * etatArrive(Automate * automate, int* tabEtat, int nbElem, int event){
     int* arrive  = malloc(sizeof(int*)* automate->nombreEtats) ;
     if(arrive){
+        for( int a=0;a<automate->nombreEtats;a++){
+            arrive[a]=NULL;
+        }
+
+        int nbArrive = 0;
         int nbEvent = automate->nombreEvent;
         for ( int i=0;i<nbElem; i++){
             int etat  = tabEtat[i];
-            for(int event = 0; event<nbEvent;event++){
-                for(int k =0;k<automate->nombreEtats;k++){
-                    if(automate->matriceTransition[etat][event][k]){
-                        
-                    }
+            
+            for(int k =0;k<automate->nombreEtats;k++){
+                if(automate->matriceTransition[etat][event][k]){
+                    arrive[nbArrive] = k;
+                    nbArrive++;
                 }
-                
             }
+                
+            
             
         }
+    }else{
+        allocPB = 1 ;
     }
+
+    return arrive;
     
+}
+
+// fonction qui prend en entrÃ©e une matrice 2d et un tableau d'entiers et qui renvoie un booleen si ce tableau est une ligne de la matrice ou pas
+int estLigne(int** matrice, int* ligne, int nombreLignes, int nombreColonnes) {
+    // Parcourir chaque ligne de la matrice
+    for (int i = 0; i < nombreLignes; i++) {
+        // Parcourir chaque colonne de la matrice
+        for (int j = 0; j < nombreColonnes; j++) {
+            // Si la valeur de la matrice est differente de la valeur de la ligne, la ligne n'est pas dans la matrice
+            if (matrice[i][j] != ligne[j]) {
+                return 0;
+            }
+        }
+    }
+
+    // Si la ligne a passe tous les tests, la ligne est dans la matrice
+    return 1;
 }
 
 // rendreDeterministe qui va permettre de rendre l'automate deterministe en partant de l'automate charge et en lui ajoutant un etat poubelle qui sera lie a tous les etats qui n'ont pas de transition pour un evenement
@@ -304,24 +361,121 @@ Automate* rendreDeterministe(Automate* automate) {
     }
 
     // recupere les informations de l'automate de base 
-    Automate* deter = initAutomateDeter(automate);
-    int etatI = NULL;
-    for (int i = 0; i<deter->nombreEtats;i++){
-        if(deter->etatsInitiaux[i] ){
-            etatI = i;
-            i=deter->nombreEtats;
+    Automate* deter = initAutomate(1,automate->nombreEvent);
+    
+    // etat initial
+    int * etatI=malloc(sizeof(int*)*automate->nombreEtats);
+    int courant=0;
+    for( int i=0; i<automate->nombreEtats;i++){
+        if(automate->etatsInitiaux[i]){
+            etatI[courant]=i;
+            courant++;
         }
+        
+    }
+    if(courant==0){
+        int verif;
+        int reste;
+        int nbInitiaux;
+        printf("\nVous avez aucun etat initial.");
+        do {
+            printf("Nombre d'etat initial: ");
+            verif = scanf("%d", &nbInitiaux);
+            reste = getchar();
+
+        } while (verifieEntree(verif, nbInitiaux, reste));
+        
+        for(int i=0;i<nbInitiaux;i++){
+            ajouterEtatInitial(automate);
+        }
+
     }
 
-
-
+    for( int i=0; i<automate->nombreEtats;i++){
+        if(automate->etatsInitiaux[i]){
+            etatI[courant]=i;
+            courant++;
+        }
+        
+    }
+    
+    
+    
      
-    int** tabEtat= malloc(sizeof(int**));
+
+
+    int** tabEtat= malloc(sizeof(int**)); // liste des nvx etat composé d'un ou plusieurs ancien etat
     
     if(tabEtat){
-        tabEtat[0] = malloc(sizeof(int*));
+        tabEtat[0] = malloc(sizeof(int*)*automate->nombreEtats);
+        
+        //intialisation du tableau
         if(tabEtat[0]){
-            tabEtat[0][0]= etatI;
+            for(int a=0;a<automate->nombreEtats;a++){
+                tabEtat[0][a]=NULL;
+            }
+            tabEtat[0]= etatI;
+            int nbElem = 1;
+
+            for(int i = 0; i<nbElem;i++){
+                for(int event = 0; event<automate->nombreEvent;event++){
+                    int* nvxTab = etatArrive(automate,tabEtat[i],nbElem,event);
+                    if(nvxTab[0]!=NULL){// si nous n'avons pas un tableau vide
+                        if(!estLigne(tabEtat,nvxTab,nbElem,automate->nombreEtats)){// si le tableau est absent dans tabEtat
+                            
+                            tabEtat = realloc(tabEtat, (nbElem + 1 )*sizeof(int**) ); // rajoute un element dans la tableau de liste des etats
+                            tabEtat[nbElem]=nvxTab;
+                            nbElem++;
+
+                            //rajout de letat parmis les anciens
+                            for (int i = 0; i < nombreEtat-1; i++) {
+                                // Parcourir chaque evenement
+                                for (int j = 0; j < automate->nombreEvent; j++) {
+                                            
+                                    
+                                    //rajout d'un element dans chaque cellule
+                                    automate->matriceTransition [i][j]= realloc(automate->matriceTransition[i][j], automate->nombreEtats * sizeof(int));
+                                    if(!automate->matriceTransition[i][j]){
+                                        allocPB=1;
+                                    }
+                                    
+
+                                    // Demander s'il y a une transition 
+                                    int rep;
+                                    do{
+                                        pb=0;
+                                        printf("Etat %d --(%c)--> nouveau etat? (1 pour oui, 0 pour non) : ", i+1,automate->listeEvent[j]);
+                                        if(scanf("%d", &rep)!=1){
+                                            printf("\nErreur, veuillez rentrer 1 ou 0.\n");
+                                            pb=1;
+                                        }
+                                        int c;
+                                        while ((c = getchar()) != '\n' && c != EOF);
+                                        if((rep!=1) & (rep!=0)){
+                                            printf("\nErreur :veuillez rentrer soit 1 ou 0.\n");
+                                            pb=1;
+                                        }
+
+                                    }while(pb);
+                                    automate->matriceTransition[i][j][automate->nombreEtats-1] = rep;
+                                    
+                                    
+                                }
+                            }
+
+
+                            
+                        }
+                        
+
+
+                        
+
+                    }  
+                }
+                 
+            }
+            deter->nombreEtats=nbElem;
         }else{
             allocPB=1;
         }
@@ -331,20 +485,82 @@ Automate* rendreDeterministe(Automate* automate) {
     }allocPB=1;
 
     
-    
-
-
-
-
-    
-    
-    
-
-
-
 
     freeAutomate(automate);
 }
 
 
 
+
+
+
+
+
+
+
+
+/*
+
+//Amine
+
+// Fonction pour vérifier si l'état existe déjà
+int etatExiste(int** etats, int nbEtats, int* nouvelEtat, int taille) {
+    for (int i = 0; i < nbEtats; i++) {
+        if (memcmp(etats[i], nouvelEtat, taille * sizeof(int)) == 0) {
+            return i; // Retourne l'indice de l'état existant
+        }
+    }
+    return -1; // L'état n'existe pas
+}
+
+// Fonction pour rendre un automate non déterministe en un automate déterministe
+Automate* rendreDeterministe1(Automate* automate) {
+    if (estDeterministe(automate)) {
+        printf("L'automate est déjà déterministe.\n");
+        return automate;
+    }
+
+    Automate* automateDet = initAutomate(0, automate->nombreEvent);
+    int** nouveauxEtats = malloc(sizeof(int*) * (1 << automate->nombreEtats));
+    int nbNouveauxEtats = 0;
+
+    nouveauxEtats[nbNouveauxEtats] = calloc(automate->nombreEtats, sizeof(int));
+    nouveauxEtats[nbNouveauxEtats][0] = 1;
+    nbNouveauxEtats++;
+
+    for (int i = 0; i < nbNouveauxEtats; i++) {
+        for (int event = 0; event < automate->nombreEvent; event++) {
+            int* nouvelEtat = calloc(automate->nombreEtats, sizeof(int));
+            
+            for (int etat = 0; etat < automate->nombreEtats; etat++) {
+                if (nouveauxEtats[i][etat] == 1) {
+                    for (int etatLie = 0; etatLie < automate->nombreEtats; etatLie++) {
+                        if (automate->matriceTransition[etat][event][etatLie] == 1) {
+                            nouvelEtat[etatLie] = 1;
+                        }
+                    }
+                }
+            }
+            
+            int index = etatExiste(nouveauxEtats, nbNouveauxEtats, nouvelEtat, automate->nombreEtats);
+            if (index == -1) {
+                nouveauxEtats[nbNouveauxEtats] = nouvelEtat;
+                ajouterTransition(automateDet, i, nbNouveauxEtats, automate->listeEvent[event]);
+                nbNouveauxEtats++;
+            } else {
+                ajouterTransition(automateDet, i, index, automate->listeEvent[event]);
+                free(nouvelEtat);
+            }
+        }
+    }
+
+    for (int i = 0; i < nbNouveauxEtats; i++) {
+        ajouterEtat(automateDet, nouveauxEtats[i]);
+        free(nouveauxEtats[i]);
+    }
+    free(nouveauxEtats);
+
+    return automateDet;
+}
+
+*/
